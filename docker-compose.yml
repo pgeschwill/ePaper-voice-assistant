@@ -1,0 +1,156 @@
+services:
+  mimic3:
+    image: mycroftai/mimic3
+    ports:
+      - 59125:59125
+    restart: unless-stopped
+    volumes:
+      - ./services/audio/voices:/home/mimic3/.local/share/mycroft/mimic3/voices
+    command: --preload-voice de_DE/thorsten_low
+
+  audio-service:
+    depends_on:
+      - mimic3
+    build: ./services/audio
+    restart: unless-stopped
+    ports:
+      - 5000:5000
+    volumes:
+      - ./services/:/services
+      - type: bind
+        source: ./config/asound.conf
+        target: /etc/asound.conf
+        read_only: true
+    devices:
+      - /dev/snd:/dev/snd
+    environment:
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: curl --fail -s http://audio-service:5000/health || exit 1
+
+  google-service:
+    build: ./services/google
+    restart: unless-stopped
+    ports:
+      - 6000:6000
+    volumes:
+      - ./services/:/services
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: curl --fail -s http://google-service:6000/health || exit 1
+
+  weather-service:
+    build: ./services/weather
+    restart: unless-stopped
+    ports:
+      - 8000:8000
+    volumes:
+      - ./services/:/services
+      - ./config:/config
+    environment:
+      - PYTHONUNBUFFERED=1
+    healthcheck:
+      test: curl --fail -s http://weather-service:8000/health || exit 1
+
+  voice-assistant:
+    depends_on:
+      audio-service:
+        condition: service_healthy
+      google-service:
+        condition: service_healthy
+      weather-service:
+        condition: service_healthy
+      infoscreen-service:
+        condition: service_healthy
+    build: ./services/voice_assistant
+    restart: unless-stopped
+    volumes:
+      - ./services/:/services
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+      - type: bind
+        source: ./config/asound.conf
+        target: /etc/asound.conf
+        read_only: true
+      - type: bind
+        source: ./config/config.json
+        target: /config/config.json
+        read_only: true
+    devices:
+      - /dev/snd:/dev/snd
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/
+  
+  infoscreen-service:
+    privileged: true
+    depends_on:
+      google-service:
+        condition: service_healthy
+      weather-service:
+        condition: service_healthy
+    build: ./services/infoscreen
+    restart: unless-stopped
+    ports:
+      - 7000:7000
+    volumes:
+      - ./services/:/services
+      - type: bind
+        source: ./config/asound.conf
+        target: /etc/asound.conf
+        read_only: true
+      - type: bind
+        source: ./config/config.json
+        target: /config/config.json
+        read_only: true
+      - type: bind
+        source: /sys
+        target: /sys
+        read_only: true
+    devices:
+      - /dev/gpiomem:/dev/gpiomem
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/
+    healthcheck:
+      test: curl --fail -s http://infoscreen-service:7000/health || exit 1
+
+  infoscreen-refresh-service:
+    depends_on:
+      infoscreen-service:
+        condition: service_healthy
+    build: 
+      context: ./services/infoscreen
+      dockerfile: Dockerfile.refresh_service
+    restart: unless-stopped
+    volumes:
+      - ./services/:/services
+      - type: bind
+        source: ./config/config.json
+        target: /config/config.json
+        read_only: true
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/
+
+  restarter:
+    depends_on:
+      - voice-assistant
+    image: docker:cli
+    volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
+    command:
+      - "/bin/sh"
+      - "-c"
+      - |
+        while true; do
+          date
+          sleep 60
+          if [ "$$(date +'%H:%M')" = '03:00' ]; then
+            echo Restarting voice-assistant
+            docker restart voice-assistant-voice-assistant-1
+          fi
+        done
+    restart: unless-stopped

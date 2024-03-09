@@ -1,0 +1,32 @@
+on:
+  workflow_dispatch:
+  pull_request:
+    branches:
+      - 'main'
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
+jobs:
+  tests:
+    name: Run tests
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install requirements
+        run: |
+          pip install -r ./tests/requirements.txt
+      - name: Run tests
+        run: |
+          pytest ./tests --junitxml=junit.xml
+      
+      - name: Junit Report 
+        uses: dorny/test-reporter@v1.8.0
+        if: success() || failure()
+        with:
+          name: Test Report
+          path: "**/junit.xml"
+          reporter: java-junit

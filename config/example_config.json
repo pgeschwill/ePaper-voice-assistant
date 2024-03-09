@@ -1,0 +1,100 @@
+{
+    "general": {
+        "timeformat": "24h",
+        "log_level": "INFO",
+        "timezone": "Europe/Berlin"
+    },
+    "google": {
+        "calendar": {
+            "calendar_names": ["Family"],
+            "items_to_ignore": [""]
+        },
+        "docs": {
+            "shopping_list_doc_id": "<doc_id>",
+            "mental_load_doc_id": "<doc_id>"
+        }
+    },
+    "weather": {
+        "api_key": "<api_key>",
+        "city": "Berlin,DE",
+        "units": "metric"
+    },
+    "audio": {
+        "mic_device_index": 1,
+        "mic_chunk_size": 512,
+        "initial_volume_percent": 50
+    },
+    "voice-assistant": {
+        "wake_word": "alexa",
+        "shopping_list_pattern": "(?i)^einkaufsliste\\s(.*)$",
+        "shopping_list_recipe_pattern": "(?i)^rezept\\s(.*)$",
+        "shopping_list_clear_keyword": "einkaufsliste löschen",
+        "mental_load_pattern": "(?i)^todo liste\\s(.*)$",
+        "update_panel_pattern": "(?i)^aktualisiere\\s(.*)$",
+        "recipes": {
+            "baked potatoes" : "potatoes, sour cream, chives, olive oil, salt, pepper"
+        }
+    },
+    "infoscreen": {
+        "rotation": 180,
+        "refresh_interval": 3600,
+        "screensaver_hour": 3,
+        "panels": {
+            "date_info": {
+                "x0": 10,
+                "y0": 10,
+                "width": 380,
+                "height": 30,
+                "title": "",
+                "title_background_color": [52, 143, 235],
+                "font_text": "robotoBlack24",
+                "font_title": "",
+                "padding": 5
+            },
+            "mental_load": {
+                "x0": 10,
+                "y0": 50,
+                "width": 380,
+                "height": 140,
+                "title": "Mental Load",
+                "title_background_color": [52, 143, 235],
+                "font_text": "robotoBlack18",
+                "font_title": "robotoBold22",
+                "padding": 5
+            },
+            "weather": {
+                "x0": 10,
+                "y0": 200,
+                "width": 380,
+                "height": 265,
+                "title": "Wetter",
+                "title_background_color": [162, 207, 118],
+                "font_text": "robotoBlack14",
+                "font_title": "robotoBold22",
+                "padding": 5
+            },
+            "calendar": {
+                "x0": 400,
+                "y0": 10,
+                "width": 380,
+                "height": 220,
+                "title": "Kalender",
+                "title_background_color": [240, 134, 115],
+                "font_text": "robotoBlack18",
+                "font_title": "robotoBold22",
+                "padding": 5
+            },
+            "shopping_list": {
+                "x0": 400,
+                "y0": 240,
+                "width": 380,
+                "height": 225,
+                "title": "Einkaufsliste",
+                "title_background_color": [52, 143, 235],
+                "font_text": "robotoBlack18",
+                "font_title": "robotoBold22",
+                "padding": 5
+            }
+        }
+    }
+}

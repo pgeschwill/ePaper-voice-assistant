@@ -1,0 +1,4 @@
+PyAudio==0.2.14
+requests==2.31.0
+SpeechRecognition==3.10.0
+vosk==0.3.45
