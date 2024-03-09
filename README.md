@@ -12,7 +12,7 @@ An e-Paper info panel that also works as a voice assistant. It displays contents
 
 ## Setup
 
-## Configuration
+### Configuration
 
 The setup requires a config.json file in the config folder. There is an [example file](https://github.com/pgeschwill/ePaper-voice-assistant/blob/main/config/example_config.json) which illustrates the available options for customization.
 
