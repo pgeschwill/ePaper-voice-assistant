@@ -12,6 +12,10 @@ An e-Paper info panel that also works as a voice assistant. It displays contents
 
 ## Setup
 
+## Configuration
+
+The setup requires a config.json file in the config folder. There is an [example file](https://github.com/pgeschwill/ePaper-voice-assistant/blob/main/config/example_config.json) which illustrates the available options for customization.
+
 ### Case
 
 The components are assembled within a wooden case to which the e-Paper screen is mounted. The microphone sticks out of the case to make sure it can record properly.
@@ -28,7 +32,7 @@ The voice assistant can insert text into specifed google docs documents and dele
 
 ### Audio
 
-When placing the case somewhere in your room, pay attention to the correct pickup pattern (cardioud or omnidirectional) because it will greatly affect the recording quality. The script [`test_mic_settings_transcription.py`](https://github.com/pgeschwill/voice-assistant/blob/main/config/test_mic_settings_transcription.py) can be used to check the recording quality.
+When placing the case somewhere in your room, pay attention to the correct pickup pattern (cardioud or omnidirectional) because it will greatly affect the recording quality. The script [`test_mic_settings_transcription.py`](https://github.com/pgeschwill/ePaper-voice-assistant/blob/main/config/test_mic_settings_transcription.py) can be used to check the recording quality.
 
 It is recommended to use USB speakers with the Raspberry Pi instead of the headphone jack because the audio quality is usually much better.
 
@@ -42,12 +46,12 @@ Apart from on-the-fly speech recognition, the voice assistant in this solution u
 
 ### e-Paper Screen
 
-This code base only works with the screen listed in the bill of materials. Each waveshare screen has its own dedicated drivers which are maintained by the waveshare team on their [github](https://github.com/waveshareteam/e-Paper). I decided to directly include the [driver](https://github.com/pgeschwill/voice-assistant/tree/main/services/infoscreen/driver) in this repo because the screen logic is essentially hardwired to this screen model.
+This code base only works with the screen listed in the bill of materials. Each waveshare screen has its own dedicated drivers which are maintained by the waveshare team on their [github](https://github.com/waveshareteam/e-Paper). I decided to directly include the [driver](https://github.com/pgeschwill/ePaper-voice-assistant/tree/main/services/infoscreen/driver) in this repo because the screen logic is essentially hardwired to this screen model.
 
 ### Clear e-paper screen on shutdown
 
 It is recommended to clear the screen when not using it for extended periods to prevent burn-in.
-In order to clear the screen on shutting down the system, the script [`clear_screen_on_shutdown.sh`](https://github.com/pgeschwill/voice-assistant/blob/main/services/infoscreen/clear_screen_on_shutdown.sh) is included which wraps a python script that contains the logic for clearing the screen.
+In order to clear the screen on shutting down the system, the script [`clear_screen_on_shutdown.sh`](https://github.com/pgeschwill/ePaper-voice-assistant/blob/main/services/infoscreen/clear_screen_on_shutdown.sh) is included which wraps a python script that contains the logic for clearing the screen.
 This bash script needs to be registered with systemd such that it is called on each shutdown.
 
 On RaspberryPi OS, this is done by first applying execute permission to the script with `chmod +x path/to/clear_screen_on_shutdown.sh`.
@@ -68,7 +72,7 @@ ExecStop=/path/to/repo/services/infoscreen/clear_screen_on_shutdown.sh
 WantedBy=multi-user.target
 ```
 
-In order for this to work properly, you need to have a venv in the appropriate location which is equipped with the depedencies listed in the [`requirements.txt`](https://github.com/pgeschwill/voice-assistant/blob/main/services/infoscreen/requirements.txt) file of the infoscreen module.
+In order for this to work properly, you need to have a venv in the appropriate location which is equipped with the depedencies listed in the [`requirements.txt`](https://github.com/pgeschwill/ePaper-voice-assistant/blob/main/services/infoscreen/requirements.txt) file of the infoscreen module.
 
 Finally, reload the daemon and enable the service
 
@@ -88,7 +92,6 @@ I was inspired to do this project by several sources which are listed below:
 ## Todo
 
 * General
-    * Rename repo to something more fitting
     * Add proper logging
 * Infoscreen
     * Add possibility to display images/photos
