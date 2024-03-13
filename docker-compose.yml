@@ -17,6 +17,7 @@ services:
       - 5000:5000
     volumes:
       - ./services/:/services
+      - ./config:/config
       - type: bind
         source: ./config/asound.conf
         target: /etc/asound.conf
