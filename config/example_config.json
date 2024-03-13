@@ -22,7 +22,8 @@
     "audio": {
         "mic_device_index": 1,
         "mic_chunk_size": 512,
-        "initial_volume_percent": 50
+        "initial_volume_percent": 50,
+        "playback_device_name": "plughw:CARD=UACDemoV10,DEV=0"
     },
     "voice-assistant": {
         "wake_word": "alexa",

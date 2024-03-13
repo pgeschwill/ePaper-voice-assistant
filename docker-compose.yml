@@ -17,6 +17,7 @@ services:
       - 5000:5000
     volumes:
       - ./services/:/services
+      - ./config:/config
       - type: bind
         source: ./config/asound.conf
         target: /etc/asound.conf
@@ -149,8 +150,8 @@ services:
           date
           sleep 60
           if [ "$$(date +'%H:%M')" = '03:00' ]; then
-            echo Restarting voice-assistant
-            docker restart voice-assistant-voice-assistant-1
+            echo Restarting ePaper-voice-assistant
+            docker restart ePaper-voice-assistant-voice-assistant-1
           fi
         done
     restart: unless-stopped

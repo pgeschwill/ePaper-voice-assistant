@@ -36,6 +36,8 @@ When placing the case somewhere in your room, pay attention to the correct picku
 
 It is recommended to use USB speakers with the Raspberry Pi instead of the headphone jack because the audio quality is usually much better.
 
+You need to specify a device for playback in your configuration which can be determined with `aplay -L`.
+
 ### Speech recognition and synthesis
 
 I went for [VOSK](https://github.com/alphacep/vosk-api) for offline speech recognition because it worked best for my purpose and it allows plugging in several voice models. The German voice model that I am using is included in the repo but can be replaced or new models can be added.
