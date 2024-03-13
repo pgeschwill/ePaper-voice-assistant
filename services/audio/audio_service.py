@@ -52,8 +52,8 @@ def generate_response():
 @app.route("/play_wav", methods=['GET'])
 def play_wav():
     filename = request.args.get("filename")
-    full_filename = f"{os.path.join(PATH_TO_RESPONSE_FILES, filename)}.wav"
-    if not os.path.exists(full_filename):
+    full_filename = f"{os.path.normpath(os.path.join(PATH_TO_RESPONSE_FILES, filename))}.wav"
+    if not full_filename.startswith(PATH_TO_RESPONSE_FILES) or not os.path.exists(full_filename):
         return jsonify(success=False)
     play(full_filename)
     return jsonify(success=True)
