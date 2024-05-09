@@ -108,9 +108,8 @@ services:
         target: /config/config.json
         read_only: true
       - type: bind
-        source: /sys
-        target: /sys
-        read_only: true
+        source: /sys/class/gpio
+        target: /sys/class/gpio
     devices:
       - /dev/gpiomem:/dev/gpiomem
     environment:
