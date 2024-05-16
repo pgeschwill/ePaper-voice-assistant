@@ -2,6 +2,8 @@
 
 An e-Paper info panel that also works as a voice assistant. It displays contents of google docs documents, google calendar items and weather information. You can talk to it to add items to a document (e.g. a shopping list), announce the weather, tell the time or whatever you configure it to do. Speech recognition and synthesis are handled locally without any cloud service.
 
+![voice-assistant](voice-assistant.jpg "voice-assistant")
+
 ## Bill of materials
 
 * Raspberry Pi 4 (4GB)
