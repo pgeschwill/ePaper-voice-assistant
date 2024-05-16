@@ -34,7 +34,7 @@ The voice assistant can insert text into specifed google docs documents and dele
 
 ### Audio
 
-When placing the case somewhere in your room, pay attention to the correct pickup pattern (cardioud or omnidirectional) because it will greatly affect the recording quality. The script [`test_mic_settings_transcription.py`](https://github.com/pgeschwill/ePaper-voice-assistant/blob/main/config/test_mic_settings_transcription.py) can be used to check the recording quality.
+When placing the case somewhere in your room, pay attention to the correct pickup pattern (cardioid or omnidirectional) because it will greatly affect the recording quality. The script [`test_mic_settings_transcription.py`](https://github.com/pgeschwill/ePaper-voice-assistant/blob/main/config/test_mic_settings_transcription.py) can be used to check the recording quality.
 
 It is recommended to use USB speakers with the Raspberry Pi instead of the headphone jack because the audio quality is usually much better.
 
@@ -86,7 +86,7 @@ sudo systemctl enable clear-screen-on-shutdown.service
 ```
 
 ## Sources
-I was inspired to do this project by several sources which are listed below:
+I was inspired to do this project by these sources:
 
 * https://www.techwithtim.net/tutorials/voice-assistant/wake-keyword
 * https://community.element14.com/challenges-projects/element14-presents/project-videos/w/documents/4628/raspberry-pi-e-ink-task-organizer----episode-422
