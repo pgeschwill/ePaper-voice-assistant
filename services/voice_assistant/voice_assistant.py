@@ -76,8 +76,10 @@ class VoiceAssistant:
                     try:
                         response = requests.get(self.weather_service_url + "/get_weather_data")
                         weather_data = json.loads(response.content)
+                        response = requests.get(self.weather_service_url + "/get_weather_forecast_data")
+                        weather_forecast_data = json.loads(response.content)
                         weather_audio_output = (f"Es hat aktuell {weather_data['temp_cur']}, gefühlt {weather_data['temp_feels_like']} Grad. "
-                                                f"Die Temperatur bewegt sich heute zwischen {weather_data['temp_min']} und {weather_data['temp_max']} Grad. "
+                                                f"Die Temperatur bewegt sich heute zwischen {round(min(weather_forecast_data['temp']))} und {round(max(weather_forecast_data['temp']))} Grad. "
                                                 f"Die Luftfeuchtigkeit liegt bei {weather_data['humidity']} Prozent.")
                         self.audio_service_wrapper.generate_response(weather_audio_output)
                     except Exception as e:

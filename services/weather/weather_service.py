@@ -31,7 +31,7 @@ def get_weather_data():
 def get_weather_forecast_data():
 
     url = "https://api.openweathermap.org/data/2.5/forecast"
-    response = requests.get('{}?q={}&units={}&appid={}&cnt='.format(url, CITY, UNITS, API_KEY, NUMBER_OF_VALUES))
+    response = requests.get('{}?q={}&units={}&appid={}&cnt={}'.format(url, CITY, UNITS, API_KEY, NUMBER_OF_VALUES))
     response.raise_for_status()
 
     return weather_utils.parse_weather_forecast_data(response.json())
