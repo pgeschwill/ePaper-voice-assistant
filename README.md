@@ -104,4 +104,3 @@ I was inspired to do this project by these sources:
     * Make font handling more flexible
 * Weather
     * Check out One-Call API
-    * pregenerate weather audio at fixed intervals to reduce synthesis overhead
