@@ -2,4 +2,4 @@ FROM python:3.11.2-slim
 
 RUN pip install --upgrade pip && pip install requests==2.31.0
 
-CMD ["python", "/services/infoscreen/infoscreen_refresh_service.py"]
+CMD ["python", "/services/refresher/refresher_service.py"]
