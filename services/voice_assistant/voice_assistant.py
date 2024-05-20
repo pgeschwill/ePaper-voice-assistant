@@ -122,15 +122,7 @@ class VoiceAssistant:
             self.audio_service_wrapper.play_response("error")
 
     def announce_weather_info(self):
-        try:
-            response = requests.get(self.weather_service_url + "/get_weather_data")
-            weather_data = json.loads(response.content)
-            response = requests.get(self.weather_service_url + "/get_weather_forecast_data")
-            weather_forecast_data = json.loads(response.content)
-            weather_audio_output = (f"Es hat aktuell {weather_data['temp_cur']}, gefühlt {weather_data['temp_feels_like']} Grad."
-                                    f"Die Temperatur liegt heute zwischen {round(min(weather_forecast_data['temp']))} und {round(max(weather_forecast_data['temp']))} Grad."
-                                    f"Die Luftfeuchtigkeit liegt bei {weather_data['humidity']} Prozent.")
-            self.audio_service_wrapper.generate_response(weather_audio_output)
-        except Exception as e:
-            print(e)
-            self.audio_service_wrapper.generate_response("Beim Abrufen der Wetterdaten ist etwas schief gelaufen.")
+        response = self.audio_service_wrapper.play_wav("current_weather_info")
+        if not response.ok:
+            response = requests.get(self.weather_service_url + "/get_weather_announcement_text")
+            self.audio_service_wrapper.generate_response(response.content)

@@ -9,22 +9,29 @@ class AudioServiceWrapper:
         params = {
             "response_type": response_type
         }
-        requests.get(self.audio_service_url + "/play_response", params = params)
+        return requests.get(self.audio_service_url + "/play_response", params = params)
 
     def play_wav(self, filename):
         params = {
             "filename": filename
         }
-        requests.get(self.audio_service_url + "/play_wav", params = params)
+        return requests.get(self.audio_service_url + "/play_wav", params = params)
 
     def generate_response(self, phrase):
         params = {
             "phrase": phrase
         }
-        requests.get(self.audio_service_url + "/generate_response", params = params)
+        return requests.get(self.audio_service_url + "/generate_response", params = params)
+
+    def generate_wav(self, phrase, filename):
+        params = {
+            "phrase": phrase,
+            "filename": filename
+        }
+        return requests.get(self.audio_service_url + "/generate_wav", params = params)
 
     def set_output_volume(self, volume):
         params = {
             "volume": volume
         }
-        requests.get(self.audio_service_url + "/set_output_volume", params = params)
+        return requests.get(self.audio_service_url + "/set_output_volume", params = params)

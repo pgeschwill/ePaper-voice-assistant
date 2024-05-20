@@ -47,12 +47,27 @@ def generate_response():
     play(output_filename)
     return jsonify(success=True)
 
+@app.route("/generate_wav", methods=['GET'])
+def generate_wav():
+    phrase = request.args.get("phrase")
+    filename = request.args.get("filename")
+    print(f"Generating wav for phrase '{phrase}'...")
+    output_filename = os.path.join(PATH_TO_RESPONSE_FILES, filename)
+    params = {
+        "text": phrase,
+        "voice": "de_DE/thorsten_low"
+    }
+    response = requests.get(MIMIC3_URL, params = params)
+    with open(output_filename, "wb") as out_file:
+        out_file.write(response.content)
+    return jsonify(success=True)
+
 @app.route("/play_wav", methods=['GET'])
 def play_wav():
     filename = request.args.get("filename")
     full_filename = f"{os.path.normpath(os.path.join(PATH_TO_RESPONSE_FILES, filename))}.wav"
-    if not full_filename.startswith(PATH_TO_RESPONSE_FILES) or not os.path.exists(full_filename):
-        return jsonify(success=False)
+    if not os.path.exists(full_filename):
+        return jsonify(error="Not Found", message="The requested file could not be found.", success=False), 404
     play(full_filename)
     return jsonify(success=True)
 
@@ -63,12 +78,12 @@ def set_output_volume():
     return jsonify(success=rc)
 
 def private_set_output_volume(volume):
-    success = False
+    rc = False
     if 0 <= int(volume) <= 100:
         mixer = alsaaudio.Mixer(control="PCM")
         mixer.setvolume(int(volume))
-        success = True
-    return success
+        rc = True
+    return rc
 
 def play(filename):
     with wave.open(filename, "rb") as f:

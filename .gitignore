@@ -164,3 +164,4 @@ config/config.json
 config/mic_test.wav
 services/infoscreen/current_image.bmp
 services/infoscreen/current_weather_forecast.png
+services/audio/wav/current_weather_info.wav
