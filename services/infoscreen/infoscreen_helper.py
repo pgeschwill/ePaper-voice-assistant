@@ -120,7 +120,7 @@ class InfoScreenHelper:
         panel_y1 = panel_config["y0"] + font_title.size + 3*padding
         cur_temp_text = f"{weather_data['temp_cur']}°C"
         feels_like_temp_text = f"Gefühlt {weather_data['temp_feels_like']}°C"
-        min_max_text = f"{weather_data['temp_min']}°C | {weather_data['temp_max']}°C"
+        min_max_text = f"{round(min(forecast_data['temp']))}°C | {round(max(forecast_data['temp']))}°C"
         humidity_text = f" {weather_data['humidity']}%"
         wind_text = f" {weather_data['wind']['speed']}m/s [{weather_data['wind']['dir']}]"
         image.paste(resized_humidity_icon, (panel_config["x0"] + padding, panel_y1), resized_humidity_icon)
@@ -155,16 +155,15 @@ class InfoScreenHelper:
         fig, ax1 = plt.subplots(figsize=(panel_config["width"]*px, (panel_config["height"])/1.5*px))
                
         # Plot the bar chart on the left axis
-        bars = ax1.bar(x, forecast_data["precip"], color="white", alpha=0.7, edgecolor="deepskyblue", linewidth=2, label="Niederschlag [%]")
+        bars = ax1.bar(x, forecast_data["rain"], color="white", alpha=0.7, edgecolor="deepskyblue", linewidth=2, label="Niederschlag [mm]")
         ax1.set_yticks([])
-        ax1.set_ylim((0, 100))
         ax1.set_xlabel("Uhrzeit")
         ax1.set_xticks(x, labels=time_range)
         
         # Add value labels to the bars
-        for bar, value in zip(bars, forecast_data["precip"]):
+        for bar, value in zip(bars, forecast_data["rain"]):
             if value != 0:
-                ax1.text(bar.get_x() + bar.get_width() / 2, 0.5 , str(value),
+                ax1.text(bar.get_x() + bar.get_width() / 2, 0, str(value),
                     ha="center", va="bottom", weight="bold", color="deepskyblue")
         
         # Create a second y-axis on the right side

@@ -232,7 +232,8 @@ class TestInfoscreenHelper:
         }
         forecast_data = {
             "temp": [5, 6, 8.2, 9, 5, 12, 4.4 , 5],
-            "precip": [23, 15, 0, 0, 88, 42, 69, 71]
+            "precip": [23, 15, 0, 0, 88, 42, 69, 71],
+            "rain": [2.1, 0.3, 0, 0, 0, 0.9, 0, 0.1]
         }
 
         # ACT

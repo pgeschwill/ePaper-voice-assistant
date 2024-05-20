@@ -119,12 +119,16 @@ services:
     healthcheck:
       test: curl --fail -s http://infoscreen-service:7000/health || exit 1
 
-  infoscreen-refresh-service:
+  refresher-service:
     depends_on:
       infoscreen-service:
         condition: service_healthy
+      weather-service:
+        condition: service_healthy
+      audio-service:
+        condition: service_healthy
     build: 
-      context: ./services/infoscreen
+      context: ./services/refresher
       dockerfile: Dockerfile.refresh_service
     restart: unless-stopped
     volumes:
