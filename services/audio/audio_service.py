@@ -1,9 +1,6 @@
 from flask import Flask, request, jsonify
 from random import randrange
-from urllib.parse import quote
 import os
-import re
-import subprocess
 import requests
 import wave
 import alsaaudio
@@ -15,6 +12,7 @@ with open("/config/config.json") as config_file:
    config = json.load(config_file)
 
 PLAYBACK_DEVICE_NAME = config["audio"]["playback_device_name"]
+INITIAL_VOLUME_PERCENT = config["audio"]["initial_volume_percent"]
 PATH_TO_THIS_FILE = os.path.dirname(os.path.abspath(__file__))
 PATH_TO_RESPONSE_FILES = os.path.join(PATH_TO_THIS_FILE, "wav")
 MIMIC3_URL = "http://mimic3:59125/api/tts"
@@ -61,12 +59,16 @@ def play_wav():
 @app.route("/set_output_volume", methods=['GET'])
 def set_output_volume():
     volume = request.args.get("volume")
-    if not re.match("\d{2}", volume):
-        return jsonify(success=False)
-    print(f"Setting volume to {volume}")
-    mixer = alsaaudio.Mixer(control="PCM")
-    mixer.setvolume(int(volume))
-    return jsonify(success=True)
+    rc = private_set_output_volume(volume)
+    return jsonify(success=rc)
+
+def private_set_output_volume(volume):
+    success = False
+    if 0 <= int(volume) <= 100:
+        mixer = alsaaudio.Mixer(control="PCM")
+        mixer.setvolume(int(volume))
+        success = True
+    return success
 
 def play(filename):
     with wave.open(filename, "rb") as f:
@@ -96,4 +98,5 @@ def play(filename):
             device.write(frames)
 
 if __name__ == '__main__':
+    private_set_output_volume(INITIAL_VOLUME_PERCENT)
     app.run(host='0.0.0.0', port=5000)

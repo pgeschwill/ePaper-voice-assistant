@@ -17,7 +17,8 @@
     "weather": {
         "api_key": "<api_key>",
         "city": "Berlin,DE",
-        "units": "metric"
+        "units": "metric",
+        "number_of_values": 8
     },
     "audio": {
         "mic_device_index": 1,

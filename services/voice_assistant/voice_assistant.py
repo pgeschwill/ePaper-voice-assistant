@@ -27,7 +27,6 @@ class VoiceAssistant:
 
     def listen(self):
         print("Listening...")
-        self.audio_service_wrapper.set_output_volume(self.volume)
 
         while True:
             baseline_text = self.speech_recognizer.get_text_from_audio(phrase_time_limit=2)
@@ -63,28 +62,17 @@ class VoiceAssistant:
                 elif match := re.search(self.update_panel_pattern, text_after_wake_word):
                     panel_to_update = match.group(1)
                     self.audio_service_wrapper.play_response("acknowledge")
-                    response = self.update_infoscreen_panel(panel_to_update)
+                    self.update_infoscreen_panel(panel_to_update)
                 elif "lauter" in text_after_wake_word:
                     self.volume += 10
                     self.audio_service_wrapper.set_output_volume(self.volume)
-                    self.audio_service_wrapper.generate_response(f"Die Lautstärke ist jetzt bei {self.volume} Prozent.")
+                    self.audio_service_wrapper.generate_response(f"Die Lautstärke ist bei {self.volume} Prozent.")
                 elif "leiser" in text_after_wake_word:
                     self.volume -= 10
                     self.audio_service_wrapper.set_output_volume(self.volume)
-                    self.audio_service_wrapper.generate_response(f"Die Lautstärke ist jetzt bei {self.volume} Prozent.")
+                    self.audio_service_wrapper.generate_response(f"Die Lautstärke ist bei {self.volume} Prozent.")
                 elif "wetter" in text_after_wake_word:
-                    try:
-                        response = requests.get(self.weather_service_url + "/get_weather_data")
-                        weather_data = json.loads(response.content)
-                        response = requests.get(self.weather_service_url + "/get_weather_forecast_data")
-                        weather_forecast_data = json.loads(response.content)
-                        weather_audio_output = (f"Es hat aktuell {weather_data['temp_cur']}, gefühlt {weather_data['temp_feels_like']} Grad. "
-                                                f"Die Temperatur bewegt sich heute zwischen {round(min(weather_forecast_data['temp']))} und {round(max(weather_forecast_data['temp']))} Grad. "
-                                                f"Die Luftfeuchtigkeit liegt bei {weather_data['humidity']} Prozent.")
-                        self.audio_service_wrapper.generate_response(weather_audio_output)
-                    except Exception as e:
-                        print(e)
-                        self.audio_service_wrapper.generate_response("Beim Abrufen der Wetterdaten ist etwas schief gelaufen.")
+                    self.announce_weather_info()
                 else:
                     self.audio_service_wrapper.play_response("misheard")
 
@@ -132,3 +120,17 @@ class VoiceAssistant:
         except Exception as e:
             print(e)
             self.audio_service_wrapper.play_response("error")
+
+    def announce_weather_info(self):
+        try:
+            response = requests.get(self.weather_service_url + "/get_weather_data")
+            weather_data = json.loads(response.content)
+            response = requests.get(self.weather_service_url + "/get_weather_forecast_data")
+            weather_forecast_data = json.loads(response.content)
+            weather_audio_output = (f"Es hat aktuell {weather_data['temp_cur']}, gefühlt {weather_data['temp_feels_like']} Grad."
+                                    f"Die Temperatur liegt heute zwischen {round(min(weather_forecast_data['temp']))} und {round(max(weather_forecast_data['temp']))} Grad."
+                                    f"Die Luftfeuchtigkeit liegt bei {weather_data['humidity']} Prozent.")
+            self.audio_service_wrapper.generate_response(weather_audio_output)
+        except Exception as e:
+            print(e)
+            self.audio_service_wrapper.generate_response("Beim Abrufen der Wetterdaten ist etwas schief gelaufen.")

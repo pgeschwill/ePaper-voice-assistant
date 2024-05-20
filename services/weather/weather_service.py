@@ -12,7 +12,7 @@ CITY = config["weather"]["city"]
 UNITS = config["weather"]["units"]
 TIMEFORMAT = config["general"]["timeformat"]
 TIMEZONE = config["general"]["timezone"]
-NUMBER_OF_VALUES = 8
+NUMBER_OF_VALUES = config["weather"]["number_of_values"]
 
 @app.route("/health", methods=['GET'])
 def health():
