@@ -52,7 +52,9 @@ def generate_wav():
     phrase = request.args.get("phrase")
     filename = request.args.get("filename")
     print(f"Generating wav for phrase '{phrase}'...")
-    output_filename = os.path.join(PATH_TO_RESPONSE_FILES, filename)
+    output_filename = f"{os.path.normpath(os.path.join(PATH_TO_RESPONSE_FILES, filename))}"
+    if not output_filename.startswith(PATH_TO_RESPONSE_FILES) or not output_filename.endswith(".wav"):
+        return jsonify(error="Illegal path", message="Illegal path for output file.", success=False), 400
     params = {
         "text": phrase,
         "voice": "de_DE/thorsten_low"
