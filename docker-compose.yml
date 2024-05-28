@@ -1,4 +1,4 @@
-name: epaper-voice-assistant
+name: ${compose_name}
 
 services:
   mimic3:
@@ -62,6 +62,7 @@ services:
       test: curl --fail -s http://${weather_service_name}:${weather_service_port}/health || exit 1
 
   voice-assistant:
+    container_name: ${voice_assistant_service_name}
     depends_on:
       audio-service:
         condition: service_healthy
@@ -160,8 +161,8 @@ services:
           date
           sleep 60
           if [ "$$(date +'%H:%M')" = '03:00' ]; then
-            echo Restarting ePaper-voice-assistant
-            docker restart ePaper-voice-assistant-voice-assistant-1
+            echo Restarting ${compose_name}
+            docker restart ${compose_name}-${voice_assistant_service_name}-1
           fi
         done
     restart: unless-stopped
