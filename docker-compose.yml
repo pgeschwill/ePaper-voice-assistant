@@ -2,6 +2,7 @@ name: ${compose_name}
 
 services:
   mimic3:
+    container_name: ${mimic3_service_name}
     image: mycroftai/mimic3
     ports:
       - ${mimic3_port}:${mimic3_port}
@@ -27,8 +28,8 @@ services:
         read_only: true
     devices:
       - /dev/snd:/dev/snd
-    environment:
-      - PYTHONUNBUFFERED=1
+    env_file:
+      - .env
     healthcheck:
       test: curl --fail -s http://${audio_service_name}:${audio_service_port}/health || exit 1
 
@@ -42,8 +43,8 @@ services:
       - ./services/:/services
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
-    environment:
-      - PYTHONUNBUFFERED=1
+    env_file:
+      - .env
     healthcheck:
       test: curl --fail -s http://${google_service_name}:${google_service_port}/health || exit 1
 
@@ -56,8 +57,8 @@ services:
     volumes:
       - ./services/:/services
       - ./config:/config
-    environment:
-      - PYTHONUNBUFFERED=1
+    env_file:
+      - .env
     healthcheck:
       test: curl --fail -s http://${weather_service_name}:${weather_service_port}/health || exit 1
 
@@ -88,9 +89,8 @@ services:
         read_only: true
     devices:
       - /dev/snd:/dev/snd
-    environment:
-      - PYTHONUNBUFFERED=1
-      - PYTHONPATH=/
+    env_file:
+      - .env
 
   infoscreen-service:
     container_name: ${infoscreen_service_name}
@@ -120,13 +120,13 @@ services:
         read_only: true
     devices:
       - /dev/gpiomem:/dev/gpiomem
-    environment:
-      - PYTHONUNBUFFERED=1
-      - PYTHONPATH=/
+    env_file:
+      - .env
     healthcheck:
       test: curl --fail -s http://${infoscreen_service_name}:${infoscreen_service_port}/health || exit 1
 
   refresher-service:
+    container_name: ${infoscreen_refresher_name}
     depends_on:
       infoscreen-service:
         condition: service_healthy
@@ -144,11 +144,11 @@ services:
         source: ./config/config.json
         target: /config/config.json
         read_only: true
-    environment:
-      - PYTHONUNBUFFERED=1
-      - PYTHONPATH=/
+    env_file:
+      - .env
 
   restarter:
+    container_name: ${voice_assistant_restarter_name}
     depends_on:
       - voice-assistant
     image: docker:cli
@@ -161,8 +161,8 @@ services:
           date
           sleep 60
           if [ "$$(date +'%H:%M')" = '03:00' ]; then
-            echo Restarting ${compose_name}
-            docker restart ${compose_name}-${voice_assistant_service_name}-1
+            echo Restarting ${voice_assistant_service_name}
+            docker restart ${voice_assistant_service_name}
           fi
         done
     restart: unless-stopped
