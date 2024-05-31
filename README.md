@@ -17,6 +17,7 @@ An e-Paper info panel that also works as a voice assistant. It displays contents
 ### Configuration
 
 The setup requires a config.json file in the config folder. There is an [example file](https://github.com/pgeschwill/ePaper-voice-assistant/blob/main/config/example_config.json) which illustrates the available options for customization.
+Additionally, the service names and their ports are have to be provided in a .env file next to the docker-compose.yml. There is an [example file](https://github.com/pgeschwill/ePaper-voice-assistant/blob/main/example.env) which can be used as a starting point.
 
 ### Case
 
