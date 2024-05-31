@@ -3,14 +3,15 @@ from services.audio import audio_service_wrapper as asw
 from services.infoscreen import infoscreen_service_wrapper as isw
 from time import sleep
 import json
+import os
 import requests
 
 with open("/config/config.json") as config_file:
         config = json.load(config_file)
-    
+
 INFOSCREEN_SERVICE_WRAPPER = isw.InfoScreenServiceWrapper(config)
 AUDIO_SERVICE_WRAPPER = asw.AudioServiceWrapper()
-WEATHER_SERVICE_URL = "http://weather-service:8000/"
+WEATHER_SERVICE_URL = f"http://{os.environ['weather_service_name']}:{os.environ['weather_service_port']}"
 
 def generate_weather_announcement_wav():
     print("Generating weather announcement audio file...")
@@ -18,7 +19,7 @@ def generate_weather_announcement_wav():
     AUDIO_SERVICE_WRAPPER.generate_wav(response.content, "current_weather_info.wav")
 
 if __name__ == '__main__':
-    
+
     while True:
         now = datetime.now()
         current_hour = int(now.strftime("%H"))
@@ -29,7 +30,7 @@ if __name__ == '__main__':
             print("Refreshing screen...")
             INFOSCREEN_SERVICE_WRAPPER.refresh_all_panels(config)
             generate_weather_announcement_wav()
-            
+
         except Exception as e:
             print(e)
             AUDIO_SERVICE_WRAPPER.generate_response("Beim Aktualisieren der Infos ist ein Fehler aufgetreten.")

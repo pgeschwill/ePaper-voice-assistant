@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, redirect
 import json
+import os
 import requests
 import weather_utils
 
@@ -48,4 +49,4 @@ def get_weather_announcement_text():
     return announcement_text
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000)
+    app.run(host='0.0.0.0', port=os.environ['weather_service_port'])
