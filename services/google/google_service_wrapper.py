@@ -1,9 +1,10 @@
+import os
 import requests
 
 class GoogleServiceWrapper:
 
     def __init__(self, config):
-        self.google_service_url = "http://google-service:6000"
+        self.google_service_url = f"http://{os.environ['google_service_name']}:{os.environ['google_service_port']}"
         self.calendar_names = config["google"]["calendar"]["calendar_names"]
         self.items_to_ignore = config["google"]["calendar"]["items_to_ignore"]
         self.timeformat = config["general"]["timeformat"]
