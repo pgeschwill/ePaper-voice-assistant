@@ -4,6 +4,7 @@ from services.audio import speech_recognizer as sr
 from services.google import google_service_wrapper as gsw
 from services.infoscreen import infoscreen_service_wrapper as isw
 import json
+import os
 import re
 import requests
 
@@ -19,7 +20,7 @@ class VoiceAssistant:
         self.mental_load_pattern = config["voice-assistant"]["mental_load_pattern"]
         self.update_panel_pattern = config["voice-assistant"]["update_panel_pattern"]
         self.volume = config["audio"]["initial_volume_percent"]
-        self.weather_service_url = "http://weather-service:8000/"
+        self.weather_service_url = f"http://{os.environ['weather_service_name']:{os.environ['weather_service_port']}}"
         self.speech_recognizer = sr.SpeechRecognizer(config)
         self.audio_service_wrapper = asw.AudioServiceWrapper()
         self.google_service_wrapper = gsw.GoogleServiceWrapper(config)

@@ -15,7 +15,7 @@ PLAYBACK_DEVICE_NAME = config["audio"]["playback_device_name"]
 INITIAL_VOLUME_PERCENT = config["audio"]["initial_volume_percent"]
 PATH_TO_THIS_FILE = os.path.dirname(os.path.abspath(__file__))
 PATH_TO_RESPONSE_FILES = os.path.join(PATH_TO_THIS_FILE, "wav")
-MIMIC3_URL = "http://mimic3:59125/api/tts"
+MIMIC3_URL = f"http://{os.environ['mimic3_service_name']}:{os.environ['mimic3_port']}/{os.environ['mimic3_endpoint']}"
 
 @app.route("/health", methods=['GET'])
 def health():
@@ -116,4 +116,4 @@ def play(filename):
 
 if __name__ == '__main__':
     private_set_output_volume(INITIAL_VOLUME_PERCENT)
-    app.run(host='0.0.0.0', port=5000)
+    app.run(host='0.0.0.0', port=os.environ['audio_service_port'])

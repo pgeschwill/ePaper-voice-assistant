@@ -3,6 +3,7 @@ from datetime import datetime as dt
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 import google_utils
+import os
 
 app = Flask(__name__)
 SCOPES = ['https://www.googleapis.com/auth/documents', 'https://www.googleapis.com/auth/calendar.readonly']
@@ -111,4 +112,4 @@ def get_calendar_items():
     return calendar_items
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=6000)
+    app.run(host='0.0.0.0', port=os.environ['google_service_port'])
