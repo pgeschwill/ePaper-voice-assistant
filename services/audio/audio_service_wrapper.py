@@ -1,9 +1,10 @@
+import os
 import requests
 
 class AudioServiceWrapper:
 
     def __init__(self):
-        self.audio_service_url = "http://audio-service:5000"
+        self.audio_service_url = f"http://{os.environ['audio_service_name']}:{os.environ['audio_service_port']}"
 
     def play_response(self, response_type):
         params = {
