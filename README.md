@@ -97,7 +97,6 @@ I was inspired to do this project by these sources:
 
 * General
     * Add proper logging
-    * Use .env file for specifying flask endpoints centrally
 * Infoscreen
     * Add possibility to display images/photos
     * Async screen update
