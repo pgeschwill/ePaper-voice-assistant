@@ -165,6 +165,9 @@ class InfoScreenHelper:
             if value != 0:
                 ax1.text(bar.get_x() + bar.get_width() / 2, 0, str(value),
                     ha="center", va="bottom", weight="bold", color="deepskyblue")
+                
+        if not any(forecast_data["rain"]):
+            ax1.set_ylim([0, 1])
         
         # Create a second y-axis on the right side
         ax2 = ax1.twinx()
