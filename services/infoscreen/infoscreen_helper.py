@@ -165,7 +165,8 @@ class InfoScreenHelper:
             if value != 0:
                 ax1.text(bar.get_x() + bar.get_width() / 2, 0, str(value),
                     ha="center", va="bottom", weight="bold", color="deepskyblue")
-                
+        
+        # Move bars to zero in case rain forecast is all 0
         if not any(forecast_data["rain"]):
             ax1.set_ylim([0, 1])
         
@@ -185,6 +186,10 @@ class InfoScreenHelper:
         for i, txt in enumerate(forecast_data["temp"]):
             ax2.annotate(txt, (x[i], forecast_data["temp"][i]), textcoords="offset points", xytext=(0, 5), ha="center", color="indianred", weight="bold")
         
+        # Offset spline by 1 to reduce overlap with bar annotation
+        current_ylim = ax2.get_ylim()
+        ax2.set_ylim([current_ylim[0] - 1, current_ylim[1]])
+
         ax1.spines["top"].set_visible(False)
         ax1.spines["left"].set_visible(False)
         ax1.spines["right"].set_visible(False)
