@@ -4,6 +4,7 @@ from services.audio import speech_recognizer as sr
 from services.google import google_service_wrapper as gsw
 from services.infoscreen import infoscreen_service_wrapper as isw
 import json
+import os
 import re
 import requests
 
@@ -19,7 +20,7 @@ class VoiceAssistant:
         self.mental_load_pattern = config["voice-assistant"]["mental_load_pattern"]
         self.update_panel_pattern = config["voice-assistant"]["update_panel_pattern"]
         self.volume = config["audio"]["initial_volume_percent"]
-        self.weather_service_url = "http://weather-service:8000/"
+        self.weather_service_url = f"http://{os.environ['weather_service_name']:{os.environ['weather_service_port']}}"
         self.speech_recognizer = sr.SpeechRecognizer(config)
         self.audio_service_wrapper = asw.AudioServiceWrapper()
         self.google_service_wrapper = gsw.GoogleServiceWrapper(config)
@@ -27,7 +28,6 @@ class VoiceAssistant:
 
     def listen(self):
         print("Listening...")
-        self.audio_service_wrapper.set_output_volume(self.volume)
 
         while True:
             baseline_text = self.speech_recognizer.get_text_from_audio(phrase_time_limit=2)
@@ -63,26 +63,17 @@ class VoiceAssistant:
                 elif match := re.search(self.update_panel_pattern, text_after_wake_word):
                     panel_to_update = match.group(1)
                     self.audio_service_wrapper.play_response("acknowledge")
-                    response = self.update_infoscreen_panel(panel_to_update)
+                    self.update_infoscreen_panel(panel_to_update)
                 elif "lauter" in text_after_wake_word:
                     self.volume += 10
                     self.audio_service_wrapper.set_output_volume(self.volume)
-                    self.audio_service_wrapper.generate_response(f"Die Lautstärke ist jetzt bei {self.volume} Prozent.")
+                    self.audio_service_wrapper.generate_response(f"Die Lautstärke ist bei {self.volume} Prozent.")
                 elif "leiser" in text_after_wake_word:
                     self.volume -= 10
                     self.audio_service_wrapper.set_output_volume(self.volume)
-                    self.audio_service_wrapper.generate_response(f"Die Lautstärke ist jetzt bei {self.volume} Prozent.")
+                    self.audio_service_wrapper.generate_response(f"Die Lautstärke ist bei {self.volume} Prozent.")
                 elif "wetter" in text_after_wake_word:
-                    try:
-                        response = requests.get(self.weather_service_url + "/get_weather_data")
-                        weather_data = json.loads(response.content)
-                        weather_audio_output = (f"Es hat aktuell {weather_data['temp_cur']}, gefühlt {weather_data['temp_feels_like']} Grad. "
-                                                f"Die Temperatur bewegt sich heute zwischen {weather_data['temp_min']} und {weather_data['temp_max']} Grad. "
-                                                f"Die Luftfeuchtigkeit liegt bei {weather_data['humidity']} Prozent.")
-                        self.audio_service_wrapper.generate_response(weather_audio_output)
-                    except Exception as e:
-                        print(e)
-                        self.audio_service_wrapper.generate_response("Beim Abrufen der Wetterdaten ist etwas schief gelaufen.")
+                    self.announce_weather_info()
                 else:
                     self.audio_service_wrapper.play_response("misheard")
 
@@ -130,3 +121,9 @@ class VoiceAssistant:
         except Exception as e:
             print(e)
             self.audio_service_wrapper.play_response("error")
+
+    def announce_weather_info(self):
+        response = self.audio_service_wrapper.play_wav("current_weather_info")
+        if not response.ok:
+            response = requests.get(self.weather_service_url + "/get_weather_announcement_text")
+            self.audio_service_wrapper.generate_response(response.content)

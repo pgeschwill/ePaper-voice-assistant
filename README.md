@@ -2,6 +2,8 @@
 
 An e-Paper info panel that also works as a voice assistant. It displays contents of google docs documents, google calendar items and weather information. You can talk to it to add items to a document (e.g. a shopping list), announce the weather, tell the time or whatever you configure it to do. Speech recognition and synthesis are handled locally without any cloud service.
 
+![voice-assistant](voice-assistant.jpg "voice-assistant")
+
 ## Bill of materials
 
 * Raspberry Pi 4 (4GB)
@@ -15,6 +17,7 @@ An e-Paper info panel that also works as a voice assistant. It displays contents
 ### Configuration
 
 The setup requires a config.json file in the config folder. There is an [example file](https://github.com/pgeschwill/ePaper-voice-assistant/blob/main/config/example_config.json) which illustrates the available options for customization.
+Additionally, the service names and their ports have to be provided in a .env file next to the docker-compose.yml. There is an [example file](https://github.com/pgeschwill/ePaper-voice-assistant/blob/main/example.env) which can be used as a starting point.
 
 ### Case
 
@@ -32,7 +35,7 @@ The voice assistant can insert text into specifed google docs documents and dele
 
 ### Audio
 
-When placing the case somewhere in your room, pay attention to the correct pickup pattern (cardioud or omnidirectional) because it will greatly affect the recording quality. The script [`test_mic_settings_transcription.py`](https://github.com/pgeschwill/ePaper-voice-assistant/blob/main/config/test_mic_settings_transcription.py) can be used to check the recording quality.
+When placing the case somewhere in your room, pay attention to the correct pickup pattern (cardioid or omnidirectional) because it will greatly affect the recording quality. The script [`test_mic_settings_transcription.py`](https://github.com/pgeschwill/ePaper-voice-assistant/blob/main/config/test_mic_settings_transcription.py) can be used to check the recording quality.
 
 It is recommended to use USB speakers with the Raspberry Pi instead of the headphone jack because the audio quality is usually much better.
 
@@ -84,7 +87,7 @@ sudo systemctl enable clear-screen-on-shutdown.service
 ```
 
 ## Sources
-I was inspired to do this project by several sources which are listed below:
+I was inspired to do this project by these sources:
 
 * https://www.techwithtim.net/tutorials/voice-assistant/wake-keyword
 * https://community.element14.com/challenges-projects/element14-presents/project-videos/w/documents/4628/raspberry-pi-e-ink-task-organizer----episode-422
@@ -101,4 +104,3 @@ I was inspired to do this project by several sources which are listed below:
     * Make font handling more flexible
 * Weather
     * Check out One-Call API
-    * pregenerate weather audio at fixed intervals to reduce synthesis overhead

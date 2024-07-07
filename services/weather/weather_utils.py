@@ -58,14 +58,21 @@ def parse_weather_data(data, timeformat, timezone):
 
 def parse_weather_forecast_data(data):
 
-    number_of_values = 8
+    data_length = len(data["list"])
     temp_forecast = []
     precip_forecast = []
-    for i in range(0, number_of_values):
+    rain_forecast = [0] * data_length
+
+    for i in range(0, data_length):
         temp_forecast.append(round(data["list"][i]["main"]["temp"], 1))
         precip_forecast.append(round(data["list"][i]["pop"] * 100))
+        if "rain" in data["list"][i]:
+            rain_forecast[i] = round(data["list"][i]["rain"]["3h"], 1)
+
     forecast_data = {
         "temp": temp_forecast,
-        "precip": precip_forecast
+        "precip": precip_forecast,
+        "rain": rain_forecast
     }
+    
     return forecast_data

@@ -232,7 +232,57 @@ class TestInfoscreenHelper:
         }
         forecast_data = {
             "temp": [5, 6, 8.2, 9, 5, 12, 4.4 , 5],
-            "precip": [23, 15, 0, 0, 88, 42, 69, 71]
+            "precip": [23, 15, 0, 0, 88, 42, 69, 71],
+            "rain": [2.1, 0.3, 0, 0, 0, 0.9, 0, 0.1]
+        }
+
+        # ACT
+        INFOSCREEN_HELPER.add_weather_panel(image, panel_config=panel_config, weather_data=weather_data, forecast_data=forecast_data)
+        cropped_image = image.crop((0, 0, 800, 430))
+        cropped_image.save(path_to_actual_output_file)
+    
+        # ASSERT
+        diff = ImageChops.difference(Image.open(path_to_actual_output_file), Image.open(path_to_expected_output_file))
+        assert diff.getbbox() is None
+
+    def test_add_weather_panel_with_empty_rain_data(self):
+        # ARRANGE
+        path_to_white_base = path.join(PATH_TO_THIS_FILE, "white_base.bmp")
+        path_to_actual_output_file = path.join(PATH_TO_THIS_FILE, "actual_output_add_weather_panel_no_rain.bmp")
+        path_to_expected_output_file = path.join(PATH_TO_THIS_FILE, "expected_output_add_weather_panel_no_rain.bmp")
+        image = Image.open(path_to_white_base)
+        panel_config = {
+            "x0": 400,
+            "y0": 190,
+            "width": 390,
+            "height": 280,
+            "title": "Wetter",
+            "title_background_color": [168, 58, 50],
+            "font_text": "robotoBlack14",
+            "font_title": "robotoBold22",
+            "padding": 5
+        }
+        weather_data = {
+            "description":"scattered clouds",
+            "humidity":85,
+            "icon":"03n",
+            "rain":{},
+            "snow":{},
+            "sunrise":"07:06",
+            "sunset":"15:26",
+            "temp_cur":2,
+            "temp_feels_like":2,
+            "temp_max":3,
+            "temp_min":-1,
+            "wind":{
+                "dir":"N",
+                "speed":1
+                }
+        }
+        forecast_data = {
+            "temp": [5, 6, 8.2, 9, 5, 12, 4.4 , 5],
+            "precip": [23, 15, 0, 0, 88, 42, 69, 71],
+            "rain": [0, 0, 0, 0, 0, 0, 0, 0]
         }
 
         # ACT
