@@ -95,12 +95,12 @@ class TestWeatherUtils:
 
         # ACT
         actual_weather_forecast_data = weather_utils.parse_weather_forecast_data(input)
-        print(actual_weather_forecast_data)
 
         # ASSERT
         expected_weather_forecast_data = {
             "temp": [11.2, 10.6, 9.4, 8.2, 10.0, 13.3, 13.4, 11.3],
-            "precip": [85, 54, 0, 0, 0, 0, 0, 0]
+            "precip": [85, 54, 0, 0, 0, 0, 0, 0],
+            "rain": [2.1, 0.3, 0, 0, 0, 0, 0, 0]
         }
         assert expected_weather_forecast_data == actual_weather_forecast_data
     
