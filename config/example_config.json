@@ -2,7 +2,8 @@
     "general": {
         "timeformat": "24h",
         "log_level": "INFO",
-        "timezone": "Europe/Berlin"
+        "timezone": "Europe/Berlin",
+        "refresh_interval": 3600
     },
     "google": {
         "calendar": {
@@ -17,7 +18,8 @@
     "weather": {
         "api_key": "<api_key>",
         "city": "Berlin,DE",
-        "units": "metric"
+        "units": "metric",
+        "number_of_values": 8
     },
     "audio": {
         "mic_device_index": 1,
@@ -38,7 +40,6 @@
     },
     "infoscreen": {
         "rotation": 180,
-        "refresh_interval": 3600,
         "screensaver_hour": 3,
         "panels": {
             "date_info": {
