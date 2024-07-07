@@ -3,6 +3,7 @@ from urllib.parse import unquote
 from flask import Flask, request, jsonify
 from PIL import  ImageDraw
 import json
+import os
 import signal
 import infoscreen_helper as ish
 import infoscreen_driver as isd
@@ -106,4 +107,4 @@ def display_screensaver():
     return jsonify(success=True)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=7000)
+    app.run(host='0.0.0.0', port=os.environ['infoscreen_service_port'])
