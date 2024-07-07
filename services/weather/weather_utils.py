@@ -61,18 +61,21 @@ def parse_weather_forecast_data(data):
     data_length = len(data["list"])
     temp_forecast = []
     precip_forecast = []
+    icon_forecast = []
     rain_forecast = [0] * data_length
 
     for i in range(0, data_length):
         temp_forecast.append(round(data["list"][i]["main"]["temp"], 1))
         precip_forecast.append(round(data["list"][i]["pop"] * 100))
+        icon_forecast.append(data["list"][i]["weather"][0]["icon"])
         if "rain" in data["list"][i]:
             rain_forecast[i] = round(data["list"][i]["rain"]["3h"], 1)
 
     forecast_data = {
         "temp": temp_forecast,
         "precip": precip_forecast,
-        "rain": rain_forecast
+        "rain": rain_forecast,
+        "icon": icon_forecast
     }
     
     return forecast_data

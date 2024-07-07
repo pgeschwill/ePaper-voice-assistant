@@ -100,7 +100,8 @@ class TestWeatherUtils:
         expected_weather_forecast_data = {
             "temp": [11.2, 10.6, 9.4, 8.2, 10.0, 13.3, 13.4, 11.3],
             "precip": [85, 54, 0, 0, 0, 0, 0, 0],
-            "rain": [2.1, 0.3, 0, 0, 0, 0, 0, 0]
+            "rain": [2.1, 0.3, 0, 0, 0, 0, 0, 0],
+            "icon": ["10n", "10n", "04n", "04n", "04d", "04d", "04d", "04n"]
         }
         assert expected_weather_forecast_data == actual_weather_forecast_data
     
