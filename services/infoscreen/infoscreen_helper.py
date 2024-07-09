@@ -6,6 +6,7 @@ import math
 import warnings
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 class InfoScreenHelper:
     def __init__(self):
@@ -136,7 +137,7 @@ class InfoScreenHelper:
         weather_forecast_output_filename = os.path.join(os.path.dirname(image.filename), "current_weather_forecast.png")
         self.create_weather_forecast_graph(panel_config=panel_config, forecast_data=forecast_data, output_filename=weather_forecast_output_filename)
         weather_forecast_graph = Image.open(weather_forecast_output_filename)
-        image.paste(weather_forecast_graph, (panel_config["x0"]+padding, panel_y1+icon_size), weather_forecast_graph)
+        image.paste(weather_forecast_graph, (panel_config["x0"]+padding, panel_y1+icon_size-5), weather_forecast_graph)
         
         self.add_panel_border(draw, panel_config["x0"], panel_config["y0"], panel_x1, panel_height + padding)
 
@@ -152,13 +153,14 @@ class InfoScreenHelper:
         
         # Create a figure and axis
         px = 1/plt.rcParams['figure.dpi']
-        fig, ax1 = plt.subplots(figsize=(panel_config["width"]*px, (panel_config["height"])/1.5*px))
+        fig, ax1 = plt.subplots(figsize=(panel_config["width"]*px, (panel_config["height"])/1.47*px))
                
         # Plot the bar chart on the left axis
         bars = ax1.bar(x, forecast_data["rain"], color="white", alpha=0.7, edgecolor="deepskyblue", linewidth=2, label="Niederschlag [mm]")
         ax1.set_yticks([])
         ax1.set_xlabel("Uhrzeit")
         ax1.set_xticks(x, labels=time_range)
+        ax1.set_ylim([0, 5])
         
         # Add value labels to the bars
         for bar, value in zip(bars, forecast_data["rain"]):
@@ -186,9 +188,20 @@ class InfoScreenHelper:
         for i, txt in enumerate(forecast_data["temp"]):
             ax2.annotate(txt, (x[i], forecast_data["temp"][i]), textcoords="offset points", xytext=(0, 5), ha="center", color="indianred", weight="bold")
         
-        # Offset spline by 1 to reduce overlap with bar annotation
         current_ylim = ax2.get_ylim()
-        ax2.set_ylim([current_ylim[0] - 1, current_ylim[1]])
+        current_xlim = ax2.get_xlim()
+
+        # Add weather icons
+        x_size = 0.3
+        y_size = 5
+        y_offset = 3
+        for i, icon in enumerate(forecast_data["icon"]):
+            weather_icon = mpimg.imread(os.path.join(self.path_to_icons, icon + ".png"))
+            ax2.imshow(weather_icon, extent=[i - x_size, i + x_size, current_ylim[1] + y_offset + y_size, current_ylim[1] + y_offset], aspect="auto", origin="lower")
+
+        # Offset spline by 1 to reduce overlap with bar annotation
+        ax2.set_ylim([current_ylim[0] - 2.5, current_ylim[1] + y_offset + y_size])
+        ax2.set_xlim([current_xlim[0], current_xlim[1]])
 
         ax1.spines["top"].set_visible(False)
         ax1.spines["left"].set_visible(False)
