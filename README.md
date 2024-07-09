@@ -102,5 +102,6 @@ I was inspired to do this project by these sources:
     * Add possibility to display images/photos
     * Async screen update
     * Make font handling more flexible
+    * Refactor infoscreen_helper. Make the whole thing more flexible.
 * Weather
     * Check out One-Call API
