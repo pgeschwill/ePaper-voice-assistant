@@ -137,7 +137,7 @@ class InfoScreenHelper:
         weather_forecast_output_filename = os.path.join(os.path.dirname(image.filename), "current_weather_forecast.png")
         self.create_weather_forecast_graph(panel_config=panel_config, forecast_data=forecast_data, output_filename=weather_forecast_output_filename)
         weather_forecast_graph = Image.open(weather_forecast_output_filename)
-        image.paste(weather_forecast_graph, (panel_config["x0"]+padding, panel_y1+icon_size-5), weather_forecast_graph)
+        image.paste(weather_forecast_graph, (panel_config["x0"] + padding, panel_y1 + icon_size), weather_forecast_graph)
         
         self.add_panel_border(draw, panel_config["x0"], panel_config["y0"], panel_x1, panel_height + padding)
 
