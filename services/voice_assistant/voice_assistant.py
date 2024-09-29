@@ -3,7 +3,6 @@ from services.audio import audio_service_wrapper as asw
 from services.audio import speech_recognizer as sr
 from services.google import google_service_wrapper as gsw
 from services.infoscreen import infoscreen_service_wrapper as isw
-import json
 import os
 import re
 import requests
