@@ -25,7 +25,7 @@ The components are assembled within a wooden case to which the e-Paper screen is
 
 ### Raspberry Pi
 
-The setup has been tested with Raspberry Pi OS version 12 (bookworm). I decided to install the OS on a USB Flash drive instead of a micro SD card to increase read/write performance and improve longevity of the system. [Here](https://www.pcwelt.de/article/1157252/raspberry-pi-4-so-starten-sie-per-usb-stick.html) is a German article that describes how to set this up. 
+The setup has been tested with Raspberry Pi OS version 12 (bookworm). I decided to install the OS on an external USB SSD instead of a micro SD card to increase read/write performance and improve longevity of the system. [Here](https://webnist.de/raspberry-pi-4-mit-einer-ssd-statt-sd-karte-betreiben/) is a German article that describes how to set this up. 
 You do of course need a local installation of docker to run the services.
 Additionally, I am running an instance of [portainer](https://docs.portainer.io/start/install-ce/server/docker/linux) to monitor the services.
 
@@ -39,7 +39,11 @@ When placing the case somewhere in your room, pay attention to the correct picku
 
 It is recommended to use USB speakers with the Raspberry Pi instead of the headphone jack because the audio quality is usually much better.
 
-You need to specify a device for playback in your configuration which can be determined with `aplay -L`.
+You need to specify a device for playback in your [`asound.conf`](https://github.com/pgeschwill/ePaper-voice-assistant/blob/main/config/asound.conf) file which can be determined with `aplay -L`.
+
+sudo apt install python-dev
+sudo apt install python3-pyaudio
+sudo apt install portaudio19-dev
 
 ### Speech recognition and synthesis
 
