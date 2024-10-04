@@ -10,7 +10,7 @@ An e-Paper info panel that also works as a voice assistant. It displays contents
 * [7.3" 7-Color e-Paper Screen](https://www.waveshare.com/7.3inch-e-paper-hat-f.htm)
 * [USB Speaker](https://www.amazon.com/-/de/dp/B075M7FHM1/ref=sr_1_3?__mk_de_DE=%C3%85M%C3%85%C5%BD%C3%95%C3%91&crid=H1U4UNFH9GEM&keywords=usb%2Bmini%2Bspeaker&qid=1706385254&sprefix=usb%2Bminii%2Bspeake%2Caps%2C189&sr=8-3&th=1)
 * [Samson Go Microphone](https://samsontech.com/products/microphones/usb-microphones/gomic/)
-* USB Flash Drive as boot medium
+* USB SSD Drive as boot medium
 
 ## Setup
 
