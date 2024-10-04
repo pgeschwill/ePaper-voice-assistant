@@ -163,6 +163,8 @@ services:
           if [ "$$(date +'%H:%M')" = '03:00' ]; then
             echo Restarting ${voice_assistant_service_name}
             docker restart ${voice_assistant_service_name}
+            echo Restarting ${infoscreen_service_name}
+            docker restart ${infoscreen_service_name}
           fi
         done
     restart: unless-stopped
