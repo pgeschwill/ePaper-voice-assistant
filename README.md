@@ -97,15 +97,3 @@ I was inspired to do this project by these sources:
 * https://community.element14.com/challenges-projects/element14-presents/project-videos/w/documents/4628/raspberry-pi-e-ink-task-organizer----episode-422
 * https://github.com/KalebClark/InfoWindow
 * https://mycroft-ai.gitbook.io/docs/mycroft-technologies/mimic-tts/mimic-3
-
-## Todo
-
-* General
-    * Add proper logging
-* Infoscreen
-    * Add possibility to display images/photos
-    * Async screen update
-    * Make font handling more flexible
-    * Refactor infoscreen_helper. Make the whole thing more flexible.
-* Weather
-    * Check out One-Call API
