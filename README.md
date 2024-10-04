@@ -41,9 +41,13 @@ It is recommended to use USB speakers with the Raspberry Pi instead of the headp
 
 You need to specify a device for playback in your [`asound.conf`](https://github.com/pgeschwill/ePaper-voice-assistant/blob/main/config/asound.conf) file which can be determined with `aplay -L`.
 
-sudo apt install python-dev
-sudo apt install python3-pyaudio
-sudo apt install portaudio19-dev
+The following additional packages may be required for building the audio-related docker container properly:
+
+``` bash
+python-dev
+python3-pyaudio
+portaudio19-dev
+```
 
 ### Speech recognition and synthesis
 
