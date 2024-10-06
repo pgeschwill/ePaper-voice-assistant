@@ -150,30 +150,44 @@ class InfoScreenHelper:
         time_range = (np.arange(current_hour, current_hour + num_hours, step=3) % num_hours)
         
         x = np.arange(len(forecast_data["temp"]))
-        
+
         # Create a figure and axis
         px = 1/plt.rcParams['figure.dpi']
-        fig, ax1 = plt.subplots(figsize=(panel_config["width"]*px, (panel_config["height"])/1.47*px))
-               
-        # Plot the bar chart on the left axis
-        bars = ax1.bar(x, forecast_data["rain"], color="white", alpha=0.7, edgecolor="deepskyblue", linewidth=2, label="Niederschlag [mm]")
-        ax1.set_yticks([])
-        ax1.set_xlabel("Uhrzeit")
-        ax1.set_xticks(x, labels=time_range)
-        ax1.set_ylim([0, 5])
+        print(px)
+        fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1, gridspec_kw={'height_ratios': [1, 3]}, figsize=(panel_config["width"]*px*1.2, (panel_config["height"])/1.8*px))
+
+        # Add weather icons
+        img_width = 500
+        img_height = 500
+        gap = 315
+        for i, icon in enumerate(forecast_data["icon"]):
+            weather_icon = mpimg.imread(os.path.join(self.path_to_icons, icon + ".png"))
+            left_x = i * (img_width + gap)
+            right_x = left_x + img_width
+            ax1.imshow(weather_icon, aspect="equal", origin="upper", extent=[left_x, right_x, 0, img_height])
         
+        ax1.set_xlim(0, 8 * img_width + 7 * gap)
+        ax1.set_ylim(0, img_height * 1.05)
+        ax1.axis('off') 
+
+        bars = ax2.bar(x, forecast_data["rain"], color="white", alpha=0.7, edgecolor="deepskyblue", linewidth=2, label="Niederschlag [mm]")
+        ax2.set_yticks([])
+        ax2.set_xlabel("Uhrzeit")
+        ax2.set_xticks(x, labels=time_range)
+        ax2.set_ylim([0, 5])
+
         # Add value labels to the bars
         for bar, value in zip(bars, forecast_data["rain"]):
             if value != 0:
-                ax1.text(bar.get_x() + bar.get_width() / 2, 0, str(value),
+                ax2.text(bar.get_x() + bar.get_width() / 2, 0, str(value),
                     ha="center", va="bottom", weight="bold", color="deepskyblue")
         
         # Move bars to zero in case rain forecast is all 0
         if not any(forecast_data["rain"]):
-            ax1.set_ylim([0, 1])
+            ax2.set_ylim([0, 1])
         
         # Create a second y-axis on the right side
-        ax2 = ax1.twinx()
+        ax3 = ax2.twinx()
         
         # Use a spline to smooth the line chart
         spl = make_interp_spline(x, forecast_data["temp"], k=3)
@@ -181,37 +195,25 @@ class InfoScreenHelper:
         y2_smooth = spl(x_smooth)
         
         # Plot the line chart with a spline on the right axis
-        ax2.plot(x_smooth, y2_smooth, color="indianred", label="Temp [°C]", linewidth=2)
-        ax2.scatter(x, forecast_data["temp"], marker="o", color="indianred")
+        ax3.plot(x_smooth, y2_smooth, color="indianred", label="Temp [°C]", linewidth=2)
+        ax3.scatter(x, forecast_data["temp"], marker="o", color="indianred")
         
         # Add value labels to the line chart
         for i, txt in enumerate(forecast_data["temp"]):
-            ax2.annotate(txt, (x[i], forecast_data["temp"][i]), textcoords="offset points", xytext=(0, 5), ha="center", color="indianred", weight="bold")
-        
-        current_ylim = ax2.get_ylim()
-        current_xlim = ax2.get_xlim()
-
-        # Add weather icons
-        x_size = 0.3
-        y_size = 5
-        y_offset = 3
-        for i, icon in enumerate(forecast_data["icon"]):
-            weather_icon = mpimg.imread(os.path.join(self.path_to_icons, icon + ".png"))
-            ax2.imshow(weather_icon, extent=[i - x_size, i + x_size, current_ylim[1] + y_offset + y_size, current_ylim[1] + y_offset], aspect="auto", origin="lower")
+            ax3.annotate(txt, (x[i], forecast_data["temp"][i]), textcoords="offset points", xytext=(0, 5), ha="center", color="indianred", weight="bold")
 
         # Offset spline by 1 to reduce overlap with bar annotation
-        ax2.set_ylim([current_ylim[0] - 2.5, current_ylim[1] + y_offset + y_size])
-        ax2.set_xlim([current_xlim[0], current_xlim[1]])
+        current_ylim = ax3.get_ylim()
+        ax3.set_ylim([current_ylim[0] - 2.5, current_ylim[1] + 2.5])
 
-        ax1.spines["top"].set_visible(False)
-        ax1.spines["left"].set_visible(False)
-        ax1.spines["right"].set_visible(False)
+        ax2.spines["top"].set_visible(False)
+        ax2.spines["left"].set_visible(False)
+        ax2.spines["right"].set_visible(False)
         ax2.spines["top"].set_visible(False)
         ax2.spines["left"].set_visible(False)
         ax2.spines["right"].set_visible(False)
         plt.axis("off")
-        plt.tight_layout()
-        plt.savefig(output_filename)
+        plt.savefig(output_filename, bbox_inches="tight")
 
     def add_date_info_panel(self, draw, panel_config, formatted_date):
         panel_height = panel_config["y0"] + panel_config["height"]
