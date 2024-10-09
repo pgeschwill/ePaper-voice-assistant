@@ -25,9 +25,10 @@ The components are assembled within a wooden case to which the e-Paper screen is
 
 ### Raspberry Pi
 
-The setup has been tested with Raspberry Pi OS version 12 (bookworm). I decided to install the OS on an external USB SSD instead of a micro SD card to increase read/write performance and improve longevity of the system. [Here](https://webnist.de/raspberry-pi-4-mit-einer-ssd-statt-sd-karte-betreiben/) is a German article that describes how to set this up. 
-You do of course need a local installation of docker to run the services.
-Additionally, I am running an instance of [portainer](https://docs.portainer.io/start/install-ce/server/docker/linux) to monitor the services.
+The setup has been tested with Raspberry Pi OS version 12 (bookworm). I decided to install the OS on an external USB SSD instead of a micro SD card to increase read/write performance and improve longevity of the system. [Here](https://webnist.de/raspberry-pi-4-mit-einer-ssd-statt-sd-karte-betreiben/) is a German article that describes how to set this up. A typical problem with running a Raspberry Pi 4 from a USB SSD drive is that the drive can be extremely slow up to the point where the system will fail to boot. This issue is explained in more detail [here](https://forums.raspberrypi.com/viewtopic.php?t=245931). To solve the problem, I had to add the usb-storage.quirks option to my `/boot/firmware/cmdline.txt` file.
+
+A local docker installation is of course required to run the services which I did via `curl -sSL https://get.docker.com | sh`.
+Additionally, I am running an instance of [portainer](https://docs.portainer.io/start/install-ce/server/docker/linux) to monitor the services. On my setup, reading memory consumption data in portainer or `docker stats` did not work properly until I followed this [github thread](https://github.com/docker/for-linux/issues/1112#issuecomment-699512425).
 
 ### Google API
 
