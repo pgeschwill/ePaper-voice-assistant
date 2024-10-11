@@ -141,14 +141,7 @@ class InfoScreenHelper:
         
         self.add_panel_border(draw, panel_config["x0"], panel_config["y0"], panel_x1, panel_height + padding)
 
-    def create_weather_forecast_graph(self, panel_config, forecast_data, output_filename=""):
-        now = datetime.now()
-        current_hour = int(now.strftime("%H"))
-        num_hours = 24
-        
-        # Create a time range in hours
-        time_range = (np.arange(current_hour, current_hour + num_hours, step=3) % num_hours)
-        
+    def create_weather_forecast_graph(self, panel_config, forecast_data, output_filename=""):      
         x = np.arange(len(forecast_data["temp"]))
 
         # Create a figure and axis
@@ -172,8 +165,15 @@ class InfoScreenHelper:
 
         bars = ax2.bar(x, forecast_data["rain"], color="white", alpha=0.7, edgecolor="deepskyblue", linewidth=2, label="Niederschlag [mm]")
         ax2.set_yticks([])
-        ax2.set_xlabel("Uhrzeit")
-        ax2.set_xticks(x, labels=time_range)
+
+        # Set x tick labels
+        now = datetime.now()
+        current_hour = int(now.strftime("%H"))
+        num_hours = 24
+        # Create a time range in hours
+        time_range = (np.arange(current_hour, current_hour + num_hours, step=3) % num_hours)
+        time_range_formatted = [f"{x}:00" for x in time_range]
+        ax2.set_xticks(x, labels=time_range_formatted)
         ax2.set_ylim([0, 5])
 
         # Add value labels to the bars
