@@ -148,9 +148,10 @@ services:
       - .env
 
   restarter:
-    container_name: ${voice_assistant_restarter_name}
+    container_name: ${service_restarter_name}
     depends_on:
       - voice-assistant
+      - infoscreen-service
     image: docker:cli
     volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
     command:
