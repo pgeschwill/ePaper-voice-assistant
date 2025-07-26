@@ -370,6 +370,16 @@ infoscreen = [
 refresher = [
     { name = "requests" },
 ]
+tests = [
+    { name = "google-api-python-client" },
+    { name = "google-auth-oauthlib" },
+    { name = "matplotlib" },
+    { name = "pillow" },
+    { name = "pytest" },
+    { name = "python-dateutil" },
+    { name = "pytz" },
+    { name = "scipy" },
+]
 voice-assistant = [
     { name = "pyaudio" },
     { name = "requests" },
@@ -417,6 +427,16 @@ infoscreen = [
     { name = "spidev", specifier = "==3.6" },
 ]
 refresher = [{ name = "requests", specifier = "==2.32.3" }]
+tests = [
+    { name = "google-api-python-client", specifier = "==2.107.0" },
+    { name = "google-auth-oauthlib", specifier = "==1.1.0" },
+    { name = "matplotlib", specifier = "==3.8.2" },
+    { name = "pillow", specifier = "==10.4.0" },
+    { name = "pytest", specifier = "==8.4.1" },
+    { name = "python-dateutil", specifier = "==2.8.2" },
+    { name = "pytz", specifier = "==2024.1" },
+    { name = "scipy", specifier = "==1.11.4" },
+]
 voice-assistant = [
     { name = "pyaudio", specifier = "==0.2.14" },
     { name = "requests", specifier = "==2.32.3" },
