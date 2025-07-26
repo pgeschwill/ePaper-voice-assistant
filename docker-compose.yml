@@ -106,7 +106,9 @@ services:
         condition: service_healthy
       weather-service:
         condition: service_healthy
-    build: ./services/infoscreen
+    build: 
+      context: ./
+      dockerfile: ./services/infoscreen/Dockerfile
     restart: unless-stopped
     ports:
       - ${infoscreen_service_port}:${infoscreen_service_port}
