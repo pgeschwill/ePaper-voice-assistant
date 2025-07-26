@@ -1,9 +1,9 @@
-FROM python:3.11.2-slim
+FROM ghcr.io/astral-sh/uv:python3.11-alpine
 
-ADD requirements.txt .
+ADD pyproject.toml .
+ADD uv.lock .
 
-RUN apt-get update && apt-get install -y curl
+RUN apk update && apk add --no-cache curl
+RUN uv sync --group google --locked
 
-RUN pip install --upgrade pip && pip install -r requirements.txt
-
-CMD ["python", "/services/google/google_service.py"]
+CMD ["uv", "run", "/services/google/google_service.py"]
