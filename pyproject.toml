@@ -18,6 +18,7 @@ audio = [
 ]
 dev = [
     "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
 ]
 google = [
     "flask==3.0.0",
