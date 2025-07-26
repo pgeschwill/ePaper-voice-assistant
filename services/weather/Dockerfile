@@ -4,6 +4,6 @@ ADD pyproject.toml .
 ADD uv.lock .
 
 RUN apk update && apk add --no-cache curl
-RUN uv sync --group weather --locked
+RUN uv sync --group weather --locked --no-dev
 
 CMD ["uv", "run", "/services/weather/weather_service.py"]

@@ -15,7 +15,7 @@ ADD uv.lock .
 RUN apt-get update && apt-get install -y gcc
 
 RUN --mount=type=cache,target=/root/.cache/uv \
-    uv sync --group infoscreen --locked
+    uv sync --group infoscreen --locked --no-dev
 
 FROM python:3.11-slim-bookworm
 

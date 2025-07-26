@@ -16,6 +16,9 @@ audio = [
     "pyalsaaudio==0.10.0",
     "requests==2.32.3",
 ]
+dev = [
+    "pytest>=8.4.1",
+]
 google = [
     "flask==3.0.0",
     "google-api-python-client==2.107.0",

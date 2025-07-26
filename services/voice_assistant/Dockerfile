@@ -9,6 +9,6 @@ RUN apt-get update && apt-get install -y \
   libasound2-plugins \
   portaudio19-dev \
   gcc
-RUN uv sync --group voice-assistant --locked
+RUN uv sync --group voice-assistant --locked --no-dev
 
 CMD ["uv", "run", "/services/voice_assistant/launch_voice_assistant.py"]

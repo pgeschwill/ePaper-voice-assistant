@@ -4,6 +4,6 @@ ADD pyproject.toml .
 ADD uv.lock .
 
 RUN apk update && apk add --no-cache curl
-RUN uv sync --group google --locked
+RUN uv sync --group google --locked --no-dev
 
 CMD ["uv", "run", "/services/google/google_service.py"]
