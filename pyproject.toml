@@ -1,0 +1,63 @@
+[project]
+name = "epaper-voice-assistant"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "flask==3.0.0",
+    "pytz==2024.1",
+    "requests==2.32.3",
+]
+
+[dependency-groups]
+audio = [
+    "flask==3.0.0",
+    "pyalsaaudio==0.10.0",
+    "requests==2.32.3",
+]
+dev = [
+    "pytest>=8.4.1",
+    "pytest-cov>=6.2.1",
+]
+google = [
+    "flask==3.0.0",
+    "google-api-python-client==2.107.0",
+    "google-auth-oauthlib==1.1.0",
+    "python-dateutil==2.8.2",
+]
+infoscreen = [
+    "flask==3.0.0",
+    "gpiozero==2.0",
+    "matplotlib==3.8.2",
+    "pillow==10.4.0",
+    "python-dateutil==2.8.2",
+    "requests==2.32.3",
+    "rpi-gpio==0.7.1",
+    "scipy==1.11.4",
+    "spidev==3.6",
+]
+refresher = [
+    "requests==2.32.3",
+]
+tests = [
+    "google-api-python-client==2.107.0",
+    "google-auth-oauthlib==1.1.0",
+    "matplotlib==3.8.2",
+    "pillow==10.4.0",
+    "pytest==8.4.1",
+    "python-dateutil==2.8.2",
+    "pytz==2024.1",
+    "scipy==1.11.4",
+]
+voice-assistant = [
+    "pyaudio==0.2.14",
+    "requests==2.32.3",
+    "speechrecognition==3.10.0",
+    "vosk==0.3.45",
+]
+weather = [
+    "flask==3.0.0",
+    "pytz==2024.1",
+    "requests==2.32.3",
+]

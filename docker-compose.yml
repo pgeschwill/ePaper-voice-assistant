@@ -35,7 +35,9 @@ services:
 
   google-service:
     container_name: ${google_service_name}
-    build: ./services/google
+    build: 
+      context: ./
+      dockerfile: ./services/google/Dockerfile
     restart: unless-stopped
     ports:
       - ${google_service_port}:${google_service_port}
@@ -50,7 +52,9 @@ services:
 
   weather-service:
     container_name: ${weather_service_name}
-    build: ./services/weather
+    build: 
+      context: ./
+      dockerfile: ./services/weather/Dockerfile
     restart: unless-stopped
     ports:
       - ${weather_service_port}:${weather_service_port}
@@ -73,7 +77,9 @@ services:
         condition: service_healthy
       infoscreen-service:
         condition: service_healthy
-    build: ./services/voice_assistant
+    build: 
+      context: ./
+      dockerfile: ./services/voice_assistant/Dockerfile
     restart: unless-stopped
     volumes:
       - ./services/:/services
@@ -100,7 +106,9 @@ services:
         condition: service_healthy
       weather-service:
         condition: service_healthy
-    build: ./services/infoscreen
+    build: 
+      context: ./
+      dockerfile: ./services/infoscreen/Dockerfile
     restart: unless-stopped
     ports:
       - ${infoscreen_service_port}:${infoscreen_service_port}
@@ -135,8 +143,8 @@ services:
       audio-service:
         condition: service_healthy
     build:
-      context: ./services/refresher
-      dockerfile: Dockerfile.refresh_service
+      context: ./
+      dockerfile: ./services/refresher/Dockerfile
     restart: unless-stopped
     volumes:
       - ./services/:/services

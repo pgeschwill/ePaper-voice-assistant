@@ -1,13 +1,14 @@
-FROM python:3.11.2
+FROM ghcr.io/astral-sh/uv:python3.11-bookworm-slim
 
-ADD requirements.txt .
+ADD pyproject.toml .
+ADD uv.lock .
 
 RUN apt-get update && apt-get install -y \
   alsa-utils \
   alsa-tools \
   libasound2-plugins \
-  portaudio19-dev
+  portaudio19-dev \
+  gcc
+RUN uv sync --group voice-assistant --locked --no-dev
 
-RUN pip install --upgrade pip && pip install -r requirements.txt
-
-CMD ["python", "/services/voice_assistant/launch_voice_assistant.py"]
+CMD ["uv", "run", "/services/voice_assistant/launch_voice_assistant.py"]
