@@ -1,4 +1,4 @@
 PyAudio==0.2.14
-requests==2.32.3
+requests==2.32.4
 SpeechRecognition==3.10.0
 vosk==0.3.45
