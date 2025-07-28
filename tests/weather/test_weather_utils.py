@@ -1,11 +1,12 @@
 import json
-from services.weather import weather_utils
 from os import path
+
+from services.weather import weather_utils
 
 PATH_TO_THIS_FILE = path.dirname(path.abspath(__file__))
 
-class TestWeatherUtils:
 
+class TestWeatherUtils:
     def test_parse_weather_data(self):
         # ARRANGE
         input = json.loads("""{
@@ -58,8 +59,10 @@ class TestWeatherUtils:
         timezone = "Europe/Berlin"
 
         # ACT
-        actual_weather_data = weather_utils.parse_weather_data(input, timeformat, timezone)
-    
+        actual_weather_data = weather_utils.parse_weather_data(
+            input, timeformat, timezone
+        )
+
         # ASSERT
         expected_weather_data = {
             "description": "moderate rain",
@@ -73,7 +76,7 @@ class TestWeatherUtils:
             "rain": {"1h": 2.3, "3h": None},
             "snow": {},
             "wind": {"dir": "S", "speed": 3},
-            "icon": "10n"
+            "icon": "10n",
         }
         assert actual_weather_data == expected_weather_data
 
@@ -83,7 +86,7 @@ class TestWeatherUtils:
 
         # ACT
         actual_geographic_direction = weather_utils.degrees_to_geographic_direction(deg)
-    
+
         # ASSERT
         assert actual_geographic_direction == "NW"
 
@@ -101,7 +104,6 @@ class TestWeatherUtils:
             "temp": [11.2, 10.6, 9.4, 8.2, 10.0, 13.3, 13.4, 11.3],
             "precip": [85, 54, 0, 0, 0, 0, 0, 0],
             "rain": [2.1, 0.3, 0, 0, 0, 0, 0, 0],
-            "icon": ["10n", "10n", "04n", "04n", "04d", "04d", "04d", "04n"]
+            "icon": ["10n", "10n", "04n", "04n", "04d", "04d", "04d", "04n"],
         }
         assert expected_weather_forecast_data == actual_weather_forecast_data
-    

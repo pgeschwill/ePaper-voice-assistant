@@ -1,14 +1,16 @@
+from os import listdir, path, remove
+
 import pytest
-from PIL import Image, ImageDraw, ImageChops
+from PIL import Image, ImageChops, ImageDraw
+
 from services.infoscreen import infoscreen_helper as ish
-from os import path, listdir, remove
 
 PATH_TO_THIS_FILE = path.dirname(path.abspath(__file__))
 INFOSCREEN_HELPER = ish.InfoScreenHelper()
 PATH_TO_WHITE_BASE = path.join(PATH_TO_THIS_FILE, "white_base.bmp")
 
-class TestInfoscreenHelper:
 
+class TestInfoscreenHelper:
     def teardown_method(self, method):
         file_list = listdir(PATH_TO_THIS_FILE)
         for file_name in file_list:
@@ -23,8 +25,12 @@ class TestInfoscreenHelper:
     def test_add_panel_with_text(self):
         # ARRANGE
         path_to_white_base = path.join(PATH_TO_THIS_FILE, "white_base.bmp")
-        path_to_actual_output_file = path.join(PATH_TO_THIS_FILE, "actual_output_add_panel_with_text.bmp")
-        path_to_expected_output_file = path.join(PATH_TO_THIS_FILE, "expected_output_add_panel_with_text.bmp")
+        path_to_actual_output_file = path.join(
+            PATH_TO_THIS_FILE, "actual_output_add_panel_with_text.bmp"
+        )
+        path_to_expected_output_file = path.join(
+            PATH_TO_THIS_FILE, "expected_output_add_panel_with_text.bmp"
+        )
         image = Image.open(path_to_white_base)
         draw = ImageDraw.Draw(image)
         text = "This is a very long text that should be broken with newlines and is getting even longer. This is even more text that should be broken down."
@@ -37,22 +43,31 @@ class TestInfoscreenHelper:
             "title_background_color": [52, 143, 235],
             "font_text": "robotoBlack14",
             "font_title": "robotoBold22",
-            "padding": 5
+            "padding": 5,
         }
 
         # ACT
-        INFOSCREEN_HELPER.add_panel_with_text(draw, panel_config=panel_config, text=text)
+        INFOSCREEN_HELPER.add_panel_with_text(
+            draw, panel_config=panel_config, text=text
+        )
         image.save(path_to_actual_output_file)
-    
+
         # ASSERT
-        diff = ImageChops.difference(Image.open(path_to_actual_output_file), Image.open(path_to_expected_output_file))
+        diff = ImageChops.difference(
+            Image.open(path_to_actual_output_file),
+            Image.open(path_to_expected_output_file),
+        )
         assert diff.getbbox() is None
-    
+
     def test_add_panel_with_text_cut_off(self):
         # ARRANGE
         path_to_white_base = path.join(PATH_TO_THIS_FILE, "white_base.bmp")
-        path_to_actual_output_file = path.join(PATH_TO_THIS_FILE, "actual_output_add_panel_with_text_cut_off.bmp")
-        path_to_expected_output_file = path.join(PATH_TO_THIS_FILE, "expected_output_add_panel_with_text_cut_off.bmp")
+        path_to_actual_output_file = path.join(
+            PATH_TO_THIS_FILE, "actual_output_add_panel_with_text_cut_off.bmp"
+        )
+        path_to_expected_output_file = path.join(
+            PATH_TO_THIS_FILE, "expected_output_add_panel_with_text_cut_off.bmp"
+        )
         image = Image.open(path_to_white_base)
         draw = ImageDraw.Draw(image)
         text = "This is a very long text that should be broken with newlines and is getting even longer. This is even more text that should be broken down."
@@ -65,22 +80,32 @@ class TestInfoscreenHelper:
             "title_background_color": [52, 143, 235],
             "font_text": "robotoBlack14",
             "font_title": "robotoBold22",
-            "padding": 5
+            "padding": 5,
         }
 
         # ACT
-        with pytest.warns(UserWarning, match="Text is cut off because it exceeds the given panel height."):
-            INFOSCREEN_HELPER.add_panel_with_text(draw, panel_config=panel_config, text=text)
+        with pytest.warns(
+            UserWarning,
+            match="Text is cut off because it exceeds the given panel height.",
+        ):
+            INFOSCREEN_HELPER.add_panel_with_text(
+                draw, panel_config=panel_config, text=text
+            )
             image.save(path_to_actual_output_file)
-    
+
         # ASSERT
-        diff = ImageChops.difference(Image.open(path_to_actual_output_file), Image.open(path_to_expected_output_file))
+        diff = ImageChops.difference(
+            Image.open(path_to_actual_output_file),
+            Image.open(path_to_expected_output_file),
+        )
         assert diff.getbbox() is None
-    
+
     def test_clear_panel(self):
         # ARRANGE
         path_to_white_base = path.join(PATH_TO_THIS_FILE, "white_base.bmp")
-        path_to_actual_output_file = path.join(PATH_TO_THIS_FILE, "actual_output_clear_panel.bmp")
+        path_to_actual_output_file = path.join(
+            PATH_TO_THIS_FILE, "actual_output_clear_panel.bmp"
+        )
         image = Image.open(path_to_white_base)
         draw = ImageDraw.Draw(image)
         text = "Dummy text"
@@ -93,23 +118,31 @@ class TestInfoscreenHelper:
             "title_background_color": [52, 143, 235],
             "font_text": "robotoBlack14",
             "font_title": "robotoBold22",
-            "padding": 5
+            "padding": 5,
         }
-        INFOSCREEN_HELPER.add_panel_with_text(draw, panel_config=panel_config, text=text)
+        INFOSCREEN_HELPER.add_panel_with_text(
+            draw, panel_config=panel_config, text=text
+        )
 
         # ACT
         INFOSCREEN_HELPER.clear_panel(draw, panel_config)
         image.save(path_to_actual_output_file)
-    
+
         # ASSERT
-        diff = ImageChops.difference(Image.open(path_to_actual_output_file), Image.open(path_to_white_base))
+        diff = ImageChops.difference(
+            Image.open(path_to_actual_output_file), Image.open(path_to_white_base)
+        )
         assert diff.getbbox() is None
-    
+
     def test_partial_update(self):
         # ARRANGE
         path_to_white_base = path.join(PATH_TO_THIS_FILE, "white_base.bmp")
-        path_to_actual_output_file = path.join(PATH_TO_THIS_FILE, "actual_output_partial_update.bmp")
-        path_to_expected_output_file = path.join(PATH_TO_THIS_FILE, "expected_output_partial_update.bmp")
+        path_to_actual_output_file = path.join(
+            PATH_TO_THIS_FILE, "actual_output_partial_update.bmp"
+        )
+        path_to_expected_output_file = path.join(
+            PATH_TO_THIS_FILE, "expected_output_partial_update.bmp"
+        )
         image = Image.open(path_to_white_base)
         draw = ImageDraw.Draw(image)
         text = "Dummy text"
@@ -122,7 +155,7 @@ class TestInfoscreenHelper:
             "title_background_color": [52, 143, 235],
             "font_text": "robotoBlack14",
             "font_title": "robotoBold22",
-            "padding": 5
+            "padding": 5,
         }
         panel_config_right = {
             "x0": 400,
@@ -133,25 +166,38 @@ class TestInfoscreenHelper:
             "title_background_color": [52, 143, 235],
             "font_text": "robotoBlack14",
             "font_title": "robotoBold22",
-            "padding": 5
+            "padding": 5,
         }
-        INFOSCREEN_HELPER.add_panel_with_text(draw, panel_config=panel_config_left, text=text)
-        INFOSCREEN_HELPER.add_panel_with_text(draw, panel_config=panel_config_right, text=text)
+        INFOSCREEN_HELPER.add_panel_with_text(
+            draw, panel_config=panel_config_left, text=text
+        )
+        INFOSCREEN_HELPER.add_panel_with_text(
+            draw, panel_config=panel_config_right, text=text
+        )
 
         # ACT
         INFOSCREEN_HELPER.clear_panel(draw, panel_config_left)
-        INFOSCREEN_HELPER.add_panel_with_text(draw, panel_config=panel_config_left, text="New text")
+        INFOSCREEN_HELPER.add_panel_with_text(
+            draw, panel_config=panel_config_left, text="New text"
+        )
         image.save(path_to_actual_output_file)
-    
+
         # ASSERT
-        diff = ImageChops.difference(Image.open(path_to_actual_output_file), Image.open(path_to_expected_output_file))
+        diff = ImageChops.difference(
+            Image.open(path_to_actual_output_file),
+            Image.open(path_to_expected_output_file),
+        )
         assert diff.getbbox() is None
 
     def test_add_calendar_panel(self):
         # ARRANGE
         path_to_white_base = path.join(PATH_TO_THIS_FILE, "white_base.bmp")
-        path_to_actual_output_file = path.join(PATH_TO_THIS_FILE, "actual_output_add_calendar_panel.bmp")
-        path_to_expected_output_file = path.join(PATH_TO_THIS_FILE, "expected_output_add_calendar_panel.bmp")
+        path_to_actual_output_file = path.join(
+            PATH_TO_THIS_FILE, "actual_output_add_calendar_panel.bmp"
+        )
+        path_to_expected_output_file = path.join(
+            PATH_TO_THIS_FILE, "expected_output_add_calendar_panel.bmp"
+        )
         image = Image.open(path_to_white_base)
         panel_config = {
             "x0": 10,
@@ -162,7 +208,7 @@ class TestInfoscreenHelper:
             "title_background_color": [168, 58, 50],
             "font_text": "robotoBlack14",
             "font_title": "robotoBold22",
-            "padding": 5
+            "padding": 5,
         }
         calendar_items = [
             {
@@ -170,37 +216,46 @@ class TestInfoscreenHelper:
                 "start_date": "24.12.",
                 "start_time": "16:00",
                 "end_date": "24.12.",
-                "end_time": "17:00"
+                "end_time": "17:00",
             },
             {
                 "content": "Test_item2",
                 "start_date": "01.12.",
                 "start_time": "11:00",
                 "end_date": "03.12.",
-                "end_time": "17:00"
+                "end_time": "17:00",
             },
             {
                 "content": "Test_item3",
                 "start_date": "01.10.",
                 "start_time": "11:30",
                 "end_date": "02.12.",
-                "end_time": "17:00"
-            }
+                "end_time": "17:00",
+            },
         ]
 
         # ACT
-        INFOSCREEN_HELPER.add_calendar_panel(image, panel_config=panel_config, calendar_items=calendar_items)
+        INFOSCREEN_HELPER.add_calendar_panel(
+            image, panel_config=panel_config, calendar_items=calendar_items
+        )
         image.save(path_to_actual_output_file)
-    
+
         # ASSERT
-        diff = ImageChops.difference(Image.open(path_to_actual_output_file), Image.open(path_to_expected_output_file))
+        diff = ImageChops.difference(
+            Image.open(path_to_actual_output_file),
+            Image.open(path_to_expected_output_file),
+        )
         assert diff.getbbox() is None
 
     def test_add_weather_panel(self):
         # ARRANGE
         path_to_white_base = path.join(PATH_TO_THIS_FILE, "white_base.bmp")
-        path_to_actual_output_file = path.join(PATH_TO_THIS_FILE, "actual_output_add_weather_panel.bmp")
-        path_to_expected_output_file = path.join(PATH_TO_THIS_FILE, "expected_output_add_weather_panel.bmp")
+        path_to_actual_output_file = path.join(
+            PATH_TO_THIS_FILE, "actual_output_add_weather_panel.bmp"
+        )
+        path_to_expected_output_file = path.join(
+            PATH_TO_THIS_FILE, "expected_output_add_weather_panel.bmp"
+        )
         image = Image.open(path_to_white_base)
         panel_config = {
             "x0": 400,
@@ -211,46 +266,55 @@ class TestInfoscreenHelper:
             "title_background_color": [168, 58, 50],
             "font_text": "robotoBlack14",
             "font_title": "robotoBold22",
-            "padding": 5
+            "padding": 5,
         }
         weather_data = {
-            "description":"scattered clouds",
-            "humidity":85,
-            "icon":"03n",
-            "rain":{},
-            "snow":{},
-            "sunrise":"07:06",
-            "sunset":"15:26",
-            "temp_cur":2,
-            "temp_feels_like":2,
-            "temp_max":3,
-            "temp_min":-1,
-            "wind":{
-                "dir":"N",
-                "speed":1
-                }
+            "description": "scattered clouds",
+            "humidity": 85,
+            "icon": "03n",
+            "rain": {},
+            "snow": {},
+            "sunrise": "07:06",
+            "sunset": "15:26",
+            "temp_cur": 2,
+            "temp_feels_like": 2,
+            "temp_max": 3,
+            "temp_min": -1,
+            "wind": {"dir": "N", "speed": 1},
         }
         forecast_data = {
-            "temp": [5, 6, 8.2, 9, 5, 12, 4.4 , 5],
+            "temp": [5, 6, 8.2, 9, 5, 12, 4.4, 5],
             "precip": [23, 15, 0, 0, 88, 42, 69, 71],
             "rain": [2.1, 0.3, 0, 0, 0, 0.9, 0, 0.1],
-            "icon": ["10n", "03n", "04n", "04n", "04d", "04d", "04d", "04n"]
+            "icon": ["10n", "03n", "04n", "04n", "04d", "04d", "04d", "04n"],
         }
 
         # ACT
-        INFOSCREEN_HELPER.add_weather_panel(image, panel_config=panel_config, weather_data=weather_data, forecast_data=forecast_data)
+        INFOSCREEN_HELPER.add_weather_panel(
+            image,
+            panel_config=panel_config,
+            weather_data=weather_data,
+            forecast_data=forecast_data,
+        )
         cropped_image = image.crop((0, 0, 800, 430))
         cropped_image.save(path_to_actual_output_file)
-    
+
         # ASSERT
-        diff = ImageChops.difference(Image.open(path_to_actual_output_file), Image.open(path_to_expected_output_file))
+        diff = ImageChops.difference(
+            Image.open(path_to_actual_output_file),
+            Image.open(path_to_expected_output_file),
+        )
         assert diff.getbbox() is None
 
     def test_add_weather_panel_with_empty_rain_data(self):
         # ARRANGE
         path_to_white_base = path.join(PATH_TO_THIS_FILE, "white_base.bmp")
-        path_to_actual_output_file = path.join(PATH_TO_THIS_FILE, "actual_output_add_weather_panel_no_rain.bmp")
-        path_to_expected_output_file = path.join(PATH_TO_THIS_FILE, "expected_output_add_weather_panel_no_rain.bmp")
+        path_to_actual_output_file = path.join(
+            PATH_TO_THIS_FILE, "actual_output_add_weather_panel_no_rain.bmp"
+        )
+        path_to_expected_output_file = path.join(
+            PATH_TO_THIS_FILE, "expected_output_add_weather_panel_no_rain.bmp"
+        )
         image = Image.open(path_to_white_base)
         panel_config = {
             "x0": 400,
@@ -261,46 +325,55 @@ class TestInfoscreenHelper:
             "title_background_color": [168, 58, 50],
             "font_text": "robotoBlack14",
             "font_title": "robotoBold22",
-            "padding": 5
+            "padding": 5,
         }
         weather_data = {
-            "description":"scattered clouds",
-            "humidity":85,
-            "icon":"03n",
-            "rain":{},
-            "snow":{},
-            "sunrise":"07:06",
-            "sunset":"15:26",
-            "temp_cur":2,
-            "temp_feels_like":2,
-            "temp_max":3,
-            "temp_min":-1,
-            "wind":{
-                "dir":"N",
-                "speed":1
-                }
+            "description": "scattered clouds",
+            "humidity": 85,
+            "icon": "03n",
+            "rain": {},
+            "snow": {},
+            "sunrise": "07:06",
+            "sunset": "15:26",
+            "temp_cur": 2,
+            "temp_feels_like": 2,
+            "temp_max": 3,
+            "temp_min": -1,
+            "wind": {"dir": "N", "speed": 1},
         }
         forecast_data = {
-            "temp": [5, 6, 8.2, 9, 5, 12, 4.4 , 5],
+            "temp": [5, 6, 8.2, 9, 5, 12, 4.4, 5],
             "precip": [23, 15, 0, 0, 88, 42, 69, 71],
             "rain": [0, 0, 0, 0, 0, 0, 0, 0],
-            "icon": ["10n", "03n", "04n", "04n", "04d", "04d", "04d", "04n"]
+            "icon": ["10n", "03n", "04n", "04n", "04d", "04d", "04d", "04n"],
         }
 
         # ACT
-        INFOSCREEN_HELPER.add_weather_panel(image, panel_config=panel_config, weather_data=weather_data, forecast_data=forecast_data)
+        INFOSCREEN_HELPER.add_weather_panel(
+            image,
+            panel_config=panel_config,
+            weather_data=weather_data,
+            forecast_data=forecast_data,
+        )
         cropped_image = image.crop((0, 0, 800, 430))
         cropped_image.save(path_to_actual_output_file)
-    
+
         # ASSERT
-        diff = ImageChops.difference(Image.open(path_to_actual_output_file), Image.open(path_to_expected_output_file))
+        diff = ImageChops.difference(
+            Image.open(path_to_actual_output_file),
+            Image.open(path_to_expected_output_file),
+        )
         assert diff.getbbox() is None
-    
+
     def test_weather_panel_icon_scaling(self):
         # ARRANGE
         path_to_white_base = path.join(PATH_TO_THIS_FILE, "white_base.bmp")
-        path_to_actual_output_file = path.join(PATH_TO_THIS_FILE, "actual_output_weather_panel_icon_scaling.bmp")
-        path_to_expected_output_file = path.join(PATH_TO_THIS_FILE, "expected_output_weather_panel_icon_scaling.bmp")
+        path_to_actual_output_file = path.join(
+            PATH_TO_THIS_FILE, "actual_output_weather_panel_icon_scaling.bmp"
+        )
+        path_to_expected_output_file = path.join(
+            PATH_TO_THIS_FILE, "expected_output_weather_panel_icon_scaling.bmp"
+        )
         image = Image.open(path_to_white_base)
         panel_config = {
             "x0": 400,
@@ -311,37 +384,42 @@ class TestInfoscreenHelper:
             "title_background_color": [168, 58, 50],
             "font_text": "robotoBlack14",
             "font_title": "robotoBold22",
-            "padding": 5
+            "padding": 5,
         }
         weather_data = {
-            "description":"scattered clouds",
-            "humidity":85,
-            "icon":"03n",
-            "rain":{},
-            "snow":{},
-            "sunrise":"07:06",
-            "sunset":"15:26",
-            "temp_cur":2,
-            "temp_feels_like":2,
-            "temp_max":3,
-            "temp_min":-1,
-            "wind":{
-                "dir":"N",
-                "speed":1
-                }
+            "description": "scattered clouds",
+            "humidity": 85,
+            "icon": "03n",
+            "rain": {},
+            "snow": {},
+            "sunrise": "07:06",
+            "sunset": "15:26",
+            "temp_cur": 2,
+            "temp_feels_like": 2,
+            "temp_max": 3,
+            "temp_min": -1,
+            "wind": {"dir": "N", "speed": 1},
         }
         forecast_data = {
             "temp": [5, 6, 8.2, 8, 8, 8, 4.4, 5],
             "precip": [23, 15, 0, 0, 88, 42, 69, 71],
             "rain": [2.1, 0.3, 0, 0, 0, 0.9, 0, 0.1],
-            "icon": ["10n", "03n", "04n", "04n", "01n", "04d", "04d", "04n"]
+            "icon": ["10n", "03n", "04n", "04n", "01n", "04d", "04d", "04n"],
         }
 
         # ACT
-        INFOSCREEN_HELPER.add_weather_panel(image, panel_config=panel_config, weather_data=weather_data, forecast_data=forecast_data)
+        INFOSCREEN_HELPER.add_weather_panel(
+            image,
+            panel_config=panel_config,
+            weather_data=weather_data,
+            forecast_data=forecast_data,
+        )
         cropped_image = image.crop((0, 0, 800, 430))
         cropped_image.save(path_to_actual_output_file)
-    
+
         # ASSERT
-        diff = ImageChops.difference(Image.open(path_to_actual_output_file), Image.open(path_to_expected_output_file))
+        diff = ImageChops.difference(
+            Image.open(path_to_actual_output_file),
+            Image.open(path_to_expected_output_file),
+        )
         assert diff.getbbox() is None
