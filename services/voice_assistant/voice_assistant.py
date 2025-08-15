@@ -1,20 +1,27 @@
+import os
+import re
 from datetime import datetime
+
+import requests
+
 from services.audio import audio_service_wrapper as asw
 from services.audio import speech_recognizer as sr
 from services.google import google_service_wrapper as gsw
 from services.infoscreen import infoscreen_service_wrapper as isw
-import os
-import re
-import requests
+
 
 class VoiceAssistant:
     def __init__(self, config):
         self.config = config
         self.wake_word = config["voice-assistant"]["wake_word"]
-        self.shopping_list_clear_keyword = config["voice-assistant"]["shopping_list_clear_keyword"]
+        self.shopping_list_clear_keyword = config["voice-assistant"][
+            "shopping_list_clear_keyword"
+        ]
         self.shopping_list_doc_id = config["google"]["docs"]["shopping_list_doc_id"]
         self.shopping_list_pattern = config["voice-assistant"]["shopping_list_pattern"]
-        self.shopping_list_recipe_pattern = config["voice-assistant"]["shopping_list_recipe_pattern"]
+        self.shopping_list_recipe_pattern = config["voice-assistant"][
+            "shopping_list_recipe_pattern"
+        ]
         self.mental_load_doc_id = config["google"]["docs"]["mental_load_doc_id"]
         self.mental_load_pattern = config["voice-assistant"]["mental_load_pattern"]
         self.update_panel_pattern = config["voice-assistant"]["update_panel_pattern"]
@@ -29,58 +36,95 @@ class VoiceAssistant:
         print("Listening...")
 
         while True:
-            baseline_text = self.speech_recognizer.get_text_from_audio(phrase_time_limit=2)
+            baseline_text = self.speech_recognizer.get_text_from_audio(
+                phrase_time_limit=2
+            )
 
             if self.wake_word in baseline_text:
                 self.audio_service_wrapper.play_response("wake")
-                text_after_wake_word = self.speech_recognizer.get_text_from_audio(phrase_time_limit=5)
+                text_after_wake_word = self.speech_recognizer.get_text_from_audio(
+                    phrase_time_limit=5
+                )
                 print("After Wake-Word: " + text_after_wake_word)
 
                 if self.shopping_list_clear_keyword in text_after_wake_word:
                     kwargs = {"shopping_list_doc_id": self.shopping_list_doc_id}
                     self.try_execute(self.clear_shopping_list, **kwargs)
-                elif match := re.search(self.shopping_list_pattern, text_after_wake_word):
+                elif match := re.search(
+                    self.shopping_list_pattern, text_after_wake_word
+                ):
                     insert_payload = match.group(1)
-                    self.insert_in_document(doc_id=self.shopping_list_doc_id, insert_payload=insert_payload, panel_to_update="einkaufsliste")
-                elif match := re.search(self.shopping_list_recipe_pattern, text_after_wake_word):
+                    self.insert_in_document(
+                        doc_id=self.shopping_list_doc_id,
+                        insert_payload=insert_payload,
+                        panel_to_update="einkaufsliste",
+                    )
+                elif match := re.search(
+                    self.shopping_list_recipe_pattern, text_after_wake_word
+                ):
                     recipe = match.group(1)
                     if recipe in self.config["voice-assistant"]["recipes"]:
                         ingredients = self.config["voice-assistant"]["recipes"][recipe]
-                        kwargs = {"document_id": self.shopping_list_doc_id,
-                                  "insert_payload": ingredients}
-                        self.try_execute(self.google_service_wrapper.insert_in_document_kwargs, **kwargs)
-                        self.infoscreen_service_wrapper.update_shopping_list_panel(panel_config=self.config["infoscreen"]["panels"]["shopping_list"])
+                        kwargs = {
+                            "document_id": self.shopping_list_doc_id,
+                            "insert_payload": ingredients,
+                        }
+                        self.try_execute(
+                            self.google_service_wrapper.insert_in_document_kwargs,
+                            **kwargs,
+                        )
+                        self.infoscreen_service_wrapper.update_shopping_list_panel(
+                            panel_config=self.config["infoscreen"]["panels"][
+                                "shopping_list"
+                            ]
+                        )
                     else:
                         self.audio_service_wrapper.play_response("misheard")
                 elif match := re.search(self.mental_load_pattern, text_after_wake_word):
                     insert_payload = match.group(1)
-                    self.insert_in_document(doc_id=self.mental_load_doc_id, insert_payload=insert_payload, panel_to_update="todo liste")
+                    self.insert_in_document(
+                        doc_id=self.mental_load_doc_id,
+                        insert_payload=insert_payload,
+                        panel_to_update="todo liste",
+                    )
                 elif "uhrzeit" in text_after_wake_word:
                     hour = datetime.now().strftime("%H")
                     minute = datetime.now().strftime("%M")
-                    self.audio_service_wrapper.generate_response(f"Es ist {hour} Uhr {minute}.")
-                elif match := re.search(self.update_panel_pattern, text_after_wake_word):
+                    self.audio_service_wrapper.generate_response(
+                        f"Es ist {hour} Uhr {minute}."
+                    )
+                elif match := re.search(
+                    self.update_panel_pattern, text_after_wake_word
+                ):
                     panel_to_update = match.group(1)
                     self.audio_service_wrapper.play_response("acknowledge")
                     self.update_infoscreen_panel(panel_to_update)
                 elif "lauter" in text_after_wake_word:
                     self.volume += 10
                     self.audio_service_wrapper.set_output_volume(self.volume)
-                    self.audio_service_wrapper.generate_response(f"Die Lautstärke ist bei {self.volume} Prozent.")
+                    self.audio_service_wrapper.generate_response(
+                        f"Die Lautstärke ist bei {self.volume} Prozent."
+                    )
                 elif "leiser" in text_after_wake_word:
                     self.volume -= 10
                     self.audio_service_wrapper.set_output_volume(self.volume)
-                    self.audio_service_wrapper.generate_response(f"Die Lautstärke ist bei {self.volume} Prozent.")
+                    self.audio_service_wrapper.generate_response(
+                        f"Die Lautstärke ist bei {self.volume} Prozent."
+                    )
                 elif "wetter" in text_after_wake_word:
                     self.announce_weather_info()
                 else:
                     self.audio_service_wrapper.play_response("misheard")
 
     def clear_shopping_list(self, **kwargs):
-        self.google_service_wrapper.clear_document_content(kwargs["shopping_list_doc_id"])
-       
+        self.google_service_wrapper.clear_document_content(
+            kwargs["shopping_list_doc_id"]
+        )
+
     def insert_in_document(self, doc_id, insert_payload, panel_to_update):
-        self.audio_service_wrapper.generate_response(f"Soll ich {insert_payload} aufschreiben?")
+        self.audio_service_wrapper.generate_response(
+            f"Soll ich {insert_payload} aufschreiben?"
+        )
         user_response = self.speech_recognizer.get_text_from_audio(phrase_time_limit=3)
         if "ja" in user_response:
             try:
@@ -98,20 +142,30 @@ class VoiceAssistant:
     def update_infoscreen_panel(self, panel_to_update):
         try:
             if panel_to_update == "wetter":
-                self.infoscreen_service_wrapper.update_weather_panel(panel_config=self.config["infoscreen"]["panels"]["weather"])
+                self.infoscreen_service_wrapper.update_weather_panel(
+                    panel_config=self.config["infoscreen"]["panels"]["weather"]
+                )
             elif panel_to_update == "kalender":
-                self.infoscreen_service_wrapper.update_calendar_panel(panel_config=self.config["infoscreen"]["panels"]["calendar"])
+                self.infoscreen_service_wrapper.update_calendar_panel(
+                    panel_config=self.config["infoscreen"]["panels"]["calendar"]
+                )
             elif panel_to_update == "einkaufsliste":
-                self.infoscreen_service_wrapper.update_shopping_list_panel(panel_config=self.config["infoscreen"]["panels"]["shopping_list"])
+                self.infoscreen_service_wrapper.update_shopping_list_panel(
+                    panel_config=self.config["infoscreen"]["panels"]["shopping_list"]
+                )
             elif panel_to_update == "todo liste":
-                self.infoscreen_service_wrapper.update_mental_load_panel(panel_config=self.config["infoscreen"]["panels"]["mental_load"])
+                self.infoscreen_service_wrapper.update_mental_load_panel(
+                    panel_config=self.config["infoscreen"]["panels"]["mental_load"]
+                )
             elif panel_to_update == "alles":
                 self.infoscreen_service_wrapper.refresh_all_panels(config=self.config)
             else:
                 self.audio_service_wrapper.play_response("misheard")
         except Exception as e:
             print(e)
-            self.audio_service_wrapper.generate_response(f"Beim Aktualisieren des {panel_to_update} Panels ist ein Fehler aufgetreten.")
+            self.audio_service_wrapper.generate_response(
+                f"Beim Aktualisieren des {panel_to_update} Panels ist ein Fehler aufgetreten."
+            )
 
     def try_execute(self, method, **kwargs):
         try:
@@ -124,5 +178,7 @@ class VoiceAssistant:
     def announce_weather_info(self):
         response = self.audio_service_wrapper.play_wav("current_weather_info")
         if not response.ok:
-            response = requests.get(self.weather_service_url + "/get_weather_announcement_text")
+            response = requests.get(
+                self.weather_service_url + "/get_weather_announcement_text"
+            )
             self.audio_service_wrapper.generate_response(response.content)
