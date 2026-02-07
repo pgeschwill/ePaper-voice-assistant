@@ -3,6 +3,8 @@ import os
 import warnings
 from datetime import datetime
 
+import matplotlib
+matplotlib.use('Agg') # Use non-interactive backend to reduce memory overhead
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import numpy as np
@@ -147,6 +149,10 @@ class InfoScreenHelper:
             if index >= max_number_of_calendar_items - 1:
                 break
 
+        # Close icon images to free memory
+        calendar_icon.close()
+        resized_icon.close()
+
         self.add_panel_border(
             draw,
             panel_config["x0"],
@@ -247,6 +253,15 @@ class InfoScreenHelper:
             (panel_config["x0"] + padding, panel_y1 + icon_size),
             weather_forecast_graph,
         )
+
+        # Close icon and graph images to free memory
+        weather_icon.close()
+        resized_weather_icon.close()
+        humidity_icon.close()
+        resized_humidity_icon.close()
+        wind_icon.close()
+        resized_wind_icon.close()
+        weather_forecast_graph.close()
 
         self.add_panel_border(
             draw,
@@ -369,6 +384,8 @@ class InfoScreenHelper:
         ax2.spines["right"].set_visible(False)
         plt.axis("off")
         plt.savefig(output_filename, bbox_inches="tight")
+        # Close figure to free memory and prevent memory leak
+        plt.close(fig)
 
     def add_date_info_panel(self, draw, panel_config, formatted_date):
         panel_height = panel_config["y0"] + panel_config["height"]
