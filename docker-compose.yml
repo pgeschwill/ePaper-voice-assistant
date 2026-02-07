@@ -9,7 +9,9 @@ services:
     restart: unless-stopped
     volumes:
       - ./services/audio/voices:/home/mimic3/.local/share/mycroft/mimic3/voices
-    command: --preload-voice de_DE/thorsten_low
+    command: --preloa00md-voice de_DE/thorsten_low
+    mem_limit: 300m
+    mem_reservation: 256m
 
   audio-service:
     container_name: ${audio_service_name}
@@ -32,6 +34,8 @@ services:
       - .env
     healthcheck:
       test: curl --fail -s http://${audio_service_name}:${audio_service_port}/health || exit 1
+    mem_limit: 128m
+    mem_reservation: 64m
 
   google-service:
     container_name: ${google_service_name}
@@ -49,6 +53,8 @@ services:
       - .env
     healthcheck:
       test: curl --fail -s http://${google_service_name}:${google_service_port}/health || exit 1
+    mem_limit: 128m
+    mem_reservation: 64m
 
   weather-service:
     container_name: ${weather_service_name}
@@ -65,6 +71,8 @@ services:
       - .env
     healthcheck:
       test: curl --fail -s http://${weather_service_name}:${weather_service_port}/health || exit 1
+    mem_limit: 128m
+    mem_reservation: 64m
 
   voice-assistant:
     container_name: ${voice_assistant_service_name}
@@ -97,6 +105,8 @@ services:
       - /dev/snd:/dev/snd
     env_file:
       - .env
+    mem_limit: 512m
+    mem_reservation: 256m
 
   infoscreen-service:
     container_name: ${infoscreen_service_name}
@@ -132,6 +142,8 @@ services:
       - .env
     healthcheck:
       test: curl --fail -s http://${infoscreen_service_name}:${infoscreen_service_port}/health || exit 1
+    mem_limit: 256m
+    mem_reservation: 128m
 
   refresher-service:
     container_name: ${infoscreen_refresher_name}
@@ -154,6 +166,8 @@ services:
         read_only: true
     env_file:
       - .env
+    mem_limit: 128m
+    mem_reservation: 64m
 
   restarter:
     container_name: ${service_restarter_name}
@@ -177,3 +191,5 @@ services:
           fi
         done
     restart: unless-stopped
+    mem_limit: 50m
+    mem_reservation: 25m

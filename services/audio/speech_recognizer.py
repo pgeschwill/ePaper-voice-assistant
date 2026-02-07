@@ -36,19 +36,30 @@ class SpeechRecognizer:
     def get_text_from_audio(self, timeout=None, phrase_time_limit=None):
         with self.noalsaerr():
             r = sr.Recognizer()
-            with sr.Microphone(
-                device_index=self.microphone_device_index,
-                chunk_size=self.mic_chunk_size,
-            ) as source:
-                audio = r.listen(
-                    source, timeout=timeout, phrase_time_limit=phrase_time_limit
+            mic = None
+            try:
+                mic = sr.Microphone(
+                    device_index=self.microphone_device_index,
+                    chunk_size=self.mic_chunk_size,
                 )
-                recognized_text = ""
-                try:
-                    result = json.loads(self.recognize_vosk(audio))
-                    recognized_text = result["text"]
-                except Exception as e:
-                    print("Exception: " + str(e))
+                with mic as source:
+                    audio = r.listen(
+                        source, timeout=timeout, phrase_time_limit=phrase_time_limit
+                    )
+                    recognized_text = ""
+                    try:
+                        result = json.loads(self.recognize_vosk(audio))
+                        recognized_text = result["text"]
+                    except Exception as e:
+                        print("Exception: " + str(e))
+            finally:
+                # Explicitly clean up microphone resources
+                if mic is not None:
+                    try:
+                        if hasattr(mic, 'stream') and mic.stream is not None:
+                            mic.stream.close()
+                    except:
+                        pass
 
         return recognized_text
 
