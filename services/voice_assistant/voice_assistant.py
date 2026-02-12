@@ -115,6 +115,11 @@ class VoiceAssistant:
                     self.announce_weather_info()
                 else:
                     self.audio_service_wrapper.play_response("misheard")
+            
+            # Periodic cleanup to prevent long-term memory accumulation
+            # Force garbage collection periodically
+            import gc
+            gc.collect()
 
     def clear_shopping_list(self, **kwargs):
         self.google_service_wrapper.clear_document_content(
@@ -176,9 +181,13 @@ class VoiceAssistant:
             self.audio_service_wrapper.play_response("error")
 
     def announce_weather_info(self):
+        import requests
         response = self.audio_service_wrapper.play_wav("current_weather_info")
         if not response.ok:
-            response = requests.get(
-                self.weather_service_url + "/get_weather_announcement_text"
+            weather_response = requests.get(
+                self.weather_service_url + "/get_weather_announcement_text",
+                timeout=30
             )
-            self.audio_service_wrapper.generate_response(response.content)
+            content = weather_response.content
+            weather_response.close()
+            self.audio_service_wrapper.generate_response(content)

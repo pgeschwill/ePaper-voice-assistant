@@ -10,6 +10,8 @@ services:
     volumes:
       - ./services/audio/voices:/home/mimic3/.local/share/mycroft/mimic3/voices
     command: --preload-voice de_DE/thorsten_low
+    mem_limit: 256m
+    mem_reservation: 192m
 
   audio-service:
     container_name: ${audio_service_name}
@@ -32,10 +34,12 @@ services:
       - .env
     healthcheck:
       test: curl --fail -s http://${audio_service_name}:${audio_service_port}/health || exit 1
+    mem_limit: 64m
+    mem_reservation: 32m
 
   google-service:
     container_name: ${google_service_name}
-    build: 
+    build:
       context: ./
       dockerfile: ./services/google/Dockerfile
     restart: unless-stopped
@@ -49,10 +53,12 @@ services:
       - .env
     healthcheck:
       test: curl --fail -s http://${google_service_name}:${google_service_port}/health || exit 1
+    mem_limit: 128m
+    mem_reservation: 64m
 
   weather-service:
     container_name: ${weather_service_name}
-    build: 
+    build:
       context: ./
       dockerfile: ./services/weather/Dockerfile
     restart: unless-stopped
@@ -65,6 +71,8 @@ services:
       - .env
     healthcheck:
       test: curl --fail -s http://${weather_service_name}:${weather_service_port}/health || exit 1
+    mem_limit: 64m
+    mem_reservation: 32m
 
   voice-assistant:
     container_name: ${voice_assistant_service_name}
@@ -77,7 +85,7 @@ services:
         condition: service_healthy
       infoscreen-service:
         condition: service_healthy
-    build: 
+    build:
       context: ./
       dockerfile: ./services/voice_assistant/Dockerfile
     restart: unless-stopped
@@ -97,6 +105,8 @@ services:
       - /dev/snd:/dev/snd
     env_file:
       - .env
+    mem_limit: 256m
+    mem_reservation: 192m
 
   infoscreen-service:
     container_name: ${infoscreen_service_name}
@@ -106,7 +116,7 @@ services:
         condition: service_healthy
       weather-service:
         condition: service_healthy
-    build: 
+    build:
       context: ./
       dockerfile: ./services/infoscreen/Dockerfile
     restart: unless-stopped
@@ -132,6 +142,8 @@ services:
       - .env
     healthcheck:
       test: curl --fail -s http://${infoscreen_service_name}:${infoscreen_service_port}/health || exit 1
+    mem_limit: 192m
+    mem_reservation: 128m
 
   refresher-service:
     container_name: ${infoscreen_refresher_name}
@@ -154,26 +166,5 @@ services:
         read_only: true
     env_file:
       - .env
-
-  restarter:
-    container_name: ${service_restarter_name}
-    depends_on:
-      - voice-assistant
-      - infoscreen-service
-    image: docker:cli
-    volumes: ["/var/run/docker.sock:/var/run/docker.sock"]
-    command:
-      - "/bin/sh"
-      - "-c"
-      - |
-        while true; do
-          date
-          sleep 60
-          if [ "$$(date +'%H:%M')" = '03:00' ]; then
-            echo Restarting ${voice_assistant_service_name}
-            docker restart ${voice_assistant_service_name}
-            echo Restarting ${infoscreen_service_name}
-            docker restart ${infoscreen_service_name}
-          fi
-        done
-    restart: unless-stopped
+    mem_limit: 64m
+    mem_reservation: 32m
