@@ -38,7 +38,7 @@ if __name__ == "__main__":
 
         except Exception as e:
             print(e)
-            AUDIO_SERVICE_WRAPPER.generate_response(
-                "Beim Aktualisieren der Infos ist ein Fehler aufgetreten."
-            )
+#            AUDIO_SERVICE_WRAPPER.generate_response(
+#                "Beim Aktualisieren der Infos ist ein Fehler aufgetreten."
+#            )
         sleep(config["general"]["refresh_interval"])
